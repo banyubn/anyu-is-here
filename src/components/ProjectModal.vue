@@ -20,7 +20,7 @@
           <div class="project-details">
             <div class="detail-item">
               <Calendar class="detail-icon" />
-              <span>{{ project.year || '2024' }}</span>
+              <span>{{ project.year || '2025' }}</span>
             </div>
             <div class="detail-item">
               <Clock class="detail-icon" />

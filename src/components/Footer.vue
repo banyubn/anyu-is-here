@@ -47,7 +47,7 @@
           <div class="footer-divider"></div>
           <div class="footer-bottom-content">
             <p class="copyright">
-              © 2024 Banyu Bagastara Nugroho. All rights reserved.
+              © 2025 Banyu Bagastara Nugroho. All rights reserved.
             </p>
             <div class="footer-badge">
               <span class="badge-text">Made with</span>
