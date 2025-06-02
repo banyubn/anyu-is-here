@@ -17,15 +17,15 @@
           </p>
           <div class="video-stats">
             <div class="video-stat">
-              <span class="stat-number">500+</span>
+              <span class="stat-number">150+</span>
               <span class="stat-label">Videos Edited</span>
             </div>
             <div class="video-stat">
-              <span class="stat-number">50M+</span>
-              <span class="stat-label">Total Views</span>
+              <span class="stat-number">2000+</span>
+              <span class="stat-label">Hours Spent</span>
             </div>
             <div class="video-stat">
-              <span class="stat-number">5+</span>
+              <span class="stat-number">7+</span>
               <span class="stat-label">Years Experience</span>
             </div>
           </div>
@@ -220,7 +220,7 @@ const videoTypes = [
   {
     id: 1,
     name: 'PMV',
-    description: 'Anime music videos with dynamic editing and effects',
+    description: 'Photo music videos with dynamic editing and effects',
     count: 25,
     avgDuration: '3-4 min',
     features: ['Motion Graphics', 'Color Grading', 'VFX', 'Sync Editing'],
@@ -230,10 +230,10 @@ const videoTypes = [
   {
     id: 2,
     name: 'Highlights Edit',
-    description: 'Highlights edit with light and objects manipulation',
+    description: 'Highlights edit with color and objects manipulation',
     count: 15,
     avgDuration: '1-2 min',
-    features: ['Cinematic Look', 'Sound Design', 'Transitions', 'Storytelling'],
+    features: ['Montages', 'Sound Design', 'Transitions', 'Shake & Stuff'],
     thumbnail: new URL('../assets/video-editing/highlights-edit.gif', import.meta.url).href,
     gif: new URL('../assets/video-editing/highlights-edit.gif', import.meta.url).href
   },
@@ -253,9 +253,49 @@ const videoTypes = [
     description: 'Animated graphics and visual effects',
     count: 20,
     avgDuration: '1-2 min',
-    features: ['2D Animation', '3D Elements', 'Typography', 'Logo Animation'],
+    features: ['2D Animation', '3D Elements', 'Typography', 'Animation'],
     thumbnail: new URL('../assets/video-editing/motion-graphic.gif', import.meta.url).href,
     gif: new URL('../assets/video-editing/motion-graphic.gif', import.meta.url).href
+  },
+  {
+    id: 5,
+    name: 'Gaming Moments',
+    description: 'Cool or funny gaming moments edited with subtitle and stuffs',
+    count: 20,
+    avgDuration: '2-15 min',
+    features: ['2D Animation', 'Color Grading', 'Advance Cut', 'Camera Movement'],
+    thumbnail: new URL('../assets/video-editing/gaming.gif', import.meta.url).href,
+    gif: new URL('../assets/video-editing/gaming.gif', import.meta.url).href
+  },
+  {
+    id: 6,
+    name: 'Vlog',
+    description: 'Your typical vlog videos but with good editing',
+    count: 5,
+    avgDuration: '2-10 min',
+    features: ['2D Animation', 'Motion Graph', 'Color Grading', 'Advance Cut'],
+    thumbnail: new URL('../assets/video-editing/vlog.gif', import.meta.url).href,
+    gif: new URL('../assets/video-editing/vlog.gif', import.meta.url).href
+  },
+  {
+    id: 7,
+    name: '3D Camera Objects',
+    description: 'Manipulating objects with 3d camera control',
+    count: 15,
+    avgDuration: '1-5 min',
+    features: ['Motion Graph', 'Camera Objects', 'Animation'],
+    thumbnail: new URL('../assets/video-editing/3d-camera-object.gif', import.meta.url).href,
+    gif: new URL('../assets/video-editing/3d-camera-object.gif', import.meta.url).href
+  },
+  {
+    id: 8,
+    name: 'JEDAG JEDUG!',
+    description: 'Not your usual jedag jedug',
+    count: 6,
+    avgDuration: '<1 min',
+    features: ['Motion Graph', 'Camera Objects', 'Animation'],
+    thumbnail: new URL('../assets/video-editing/jedag-jedug.gif', import.meta.url).href,
+    gif: new URL('../assets/video-editing/jedag-jedug.gif', import.meta.url).href
   }
 ]
 
