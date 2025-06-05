@@ -1,5 +1,6 @@
 <template>
-  <div class="home-page">
+  <!-- Add a class to the root element that we can use to control cursor styles -->
+  <div class="home-page" :class="{ 'is-mobile': isMobileDevice }">
     <!-- Hero Section -->
     <section ref="heroSection" class="hero">
       <div class="hero-bg">
@@ -188,7 +189,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, onBeforeMount, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { 
@@ -197,6 +198,9 @@ import {
 } from 'lucide-vue-next'
 
 gsap.registerPlugin(ScrollTrigger)
+
+// Add reactive state for mobile detection
+const isMobileDevice = ref(false)
 
 // Refs
 const heroSection = ref(null)
@@ -219,6 +223,57 @@ const skillCards = ref([])
 const achievementsSection = ref(null)
 const achievementsTitle = ref(null)
 const achievementCards = ref([])
+
+// Check if device is mobile
+const isMobile = () => {
+  return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
+// Update mobile state and handle custom cursor
+const checkMobileState = () => {
+  isMobileDevice.value = isMobile()
+  
+  // If there's a custom cursor element, hide it on mobile
+  const customCursor = document.querySelector('.custom-cursor')
+  if (customCursor) {
+    if (isMobileDevice.value) {
+      customCursor.style.display = 'none'
+    } else {
+      customCursor.style.display = ''
+    }
+  }
+
+  // Kill all ScrollTriggers on mobile to prevent conflicts
+  if (isMobileDevice.value) {
+    ScrollTrigger.killAll()
+    // Reset any transforms that might interfere
+    gsap.set("*", { clearProps: "transform" })
+  }
+}
+
+// Fix mobile scroll issues
+const fixMobileScroll = () => {
+  if (isMobileDevice.value) {
+    // Reset body and html scroll behavior
+    document.body.style.overflow = 'auto'
+    document.body.style.overflowX = 'hidden'
+    document.body.style.height = 'auto'
+    document.documentElement.style.overflow = 'auto'
+    document.documentElement.style.overflowX = 'hidden'
+    document.documentElement.style.height = 'auto'
+    
+    // Disable any transforms that might interfere
+    const elements = document.querySelectorAll('*')
+    elements.forEach(el => {
+      if (el.style.transform && el.style.transform !== 'none') {
+        el.style.transform = 'none'
+      }
+    })
+    
+    // Force refresh of scroll
+    window.scrollTo(0, window.scrollY)
+  }
+}
 
 const stats = [
   { value: '150+', label: 'PROJECTS' },
@@ -346,7 +401,6 @@ const achievements = [
     year: 'jk :/',
     icon: Rocket
   }
-
 ]
 
 // Methods
@@ -399,6 +453,8 @@ const get3DPosition = (index) => {
 }
 
 const onCardHover = (event) => {
+  if (isMobileDevice.value) return // Disable hover effects on mobile
+  
   const card = event.currentTarget
   const overlay = card.querySelector('.card-overlay')
   const iconWrapper = card.querySelector('.card-icon-wrapper')
@@ -436,6 +492,8 @@ const onCardHover = (event) => {
 }
 
 const onCardLeave = (event) => {
+  if (isMobileDevice.value) return // Disable hover effects on mobile
+  
   const card = event.currentTarget
   const overlay = card.querySelector('.card-overlay')
   const iconWrapper = card.querySelector('.card-icon-wrapper')
@@ -470,6 +528,8 @@ const onCardLeave = (event) => {
 }
 
 const onOrbitItemHover = (event) => {
+  if (isMobileDevice.value) return // Disable hover effects on mobile
+  
   const item = event.currentTarget
   gsap.to(item, {
     duration: 0.15,
@@ -481,6 +541,8 @@ const onOrbitItemHover = (event) => {
 }
 
 const onOrbitItemLeave = (event) => {
+  if (isMobileDevice.value) return // Disable hover effects on mobile
+  
   const item = event.currentTarget
   gsap.to(item, {
     duration: 0.15,
@@ -492,6 +554,8 @@ const onOrbitItemLeave = (event) => {
 }
 
 const onAchievementHover = (event) => {
+  if (isMobileDevice.value) return // Disable hover effects on mobile
+  
   const card = event.currentTarget
   const icon = card.querySelector('.achievement-icon')
   
@@ -512,6 +576,8 @@ const onAchievementHover = (event) => {
 }
 
 const onAchievementLeave = (event) => {
+  if (isMobileDevice.value) return // Disable hover effects on mobile
+  
   const card = event.currentTarget
   const icon = card.querySelector('.achievement-icon')
   
@@ -549,251 +615,426 @@ const animateCounter = (element, target) => {
   })
 }
 
+onBeforeMount(() => {
+  // Check mobile state before mounting
+  if (typeof window !== 'undefined') {
+    checkMobileState()
+  }
+})
+
 onMounted(async () => {
   await nextTick()
-
-  // Hero animations
-  const heroTl = gsap.timeline()
   
-  heroTl.fromTo(heroTitle.value.children,
-    { y: 100, opacity: 0, rotationX: -15 },
-    { duration: 0.8, y: 0, opacity: 1, rotationX: 0, stagger: 0.1, ease: 'power3.out' }
-  )
-  .fromTo(heroSubtitle.value,
-    { y: 50, opacity: 0 },
-    { duration: 0.6, y: 0, opacity: 1, ease: 'power2.out' },
-    '-=0.6'
-  )
-  .fromTo('.hero-description',
-    { y: 30, opacity: 0 },
-    { duration: 0.5, y: 0, opacity: 1, ease: 'power2.out' },
-    '-=0.4'
-  )
-  .fromTo(heroStats.value.children,
-    { y: 30, opacity: 0 },
-    { duration: 0.5, y: 0, opacity: 1, stagger: 0.05, ease: 'power2.out' },
-    '-=0.4'
-  )
-  .fromTo(scrollIndicator.value,
-    { opacity: 0 },
-    { duration: 0.3, opacity: 1, ease: 'power2.out' },
-    '-=0.3'
-  )
-  .fromTo(categoryCards.value.children,
-    { y: 50, opacity: 0, rotationY: -10 },
-    { duration: 0.6, y: 0, opacity: 1, rotationY: 0, stagger: 0.1, ease: 'power2.out' },
-    '-=0.5'
-  )
+  // Check mobile state again after mounting
+  checkMobileState()
+  
+  // Fix mobile scroll issues
+  fixMobileScroll()
+  
+  // Add resize listener to update mobile state
+  window.addEventListener('resize', () => {
+    checkMobileState()
+    fixMobileScroll()
+  })
+  
+  // Add orientation change listener for mobile
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      checkMobileState()
+      fixMobileScroll()
+    }, 500)
+  })
 
-  // Counter animations
+  // Only run animations on desktop
+  if (!isMobileDevice.value) {
+    // Configure ScrollTrigger for desktop only
+    ScrollTrigger.config({
+      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+      ignoreMobileResize: true
+    })
+
+    // Hero animations
+    const heroTl = gsap.timeline()
+    
+    heroTl.fromTo(heroTitle.value.children,
+      { y: 100, opacity: 0, rotationX: -15 },
+      { duration: 0.8, y: 0, opacity: 1, rotationX: 0, stagger: 0.1, ease: 'power3.out' }
+    )
+    .fromTo(heroSubtitle.value,
+      { y: 50, opacity: 0 },
+      { duration: 0.6, y: 0, opacity: 1, ease: 'power2.out' },
+      '-=0.6'
+    )
+    .fromTo('.hero-description',
+      { y: 30, opacity: 0 },
+      { duration: 0.5, y: 0, opacity: 1, ease: 'power2.out' },
+      '-=0.4'
+    )
+    .fromTo(heroStats.value.children,
+      { y: 30, opacity: 0 },
+      { duration: 0.5, y: 0, opacity: 1, stagger: 0.05, ease: 'power2.out' },
+      '-=0.4'
+    )
+    .fromTo(scrollIndicator.value,
+      { opacity: 0 },
+      { duration: 0.3, opacity: 1, ease: 'power2.out' },
+      '-=0.3'
+    )
+    .fromTo(categoryCards.value.children,
+      { y: 50, opacity: 0, rotationY: -10 },
+      { duration: 0.6, y: 0, opacity: 1, rotationY: 0, stagger: 0.1, ease: 'power2.out' },
+      '-=0.5'
+    )
+
+    // Enhanced floating elements animation (desktop only)
+    gsap.to('.floating-dot', {
+      duration: 'random(3, 6)',
+      y: 'random(-100, 100)',
+      x: 'random(-100, 100)',
+      rotation: 'random(0, 360)',
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: {
+        amount: 2,
+        from: 'random'
+      }
+    })
+
+    // 3D Floating elements for about section (desktop only)
+    gsap.to('.floating-3d-dot', {
+      duration: 'random(4, 8)',
+      y: 'random(-50, 50)',
+      x: 'random(-30, 30)',
+      z: 'random(-100, 100)',
+      rotationX: 'random(0, 360)',
+      rotationY: 'random(0, 360)',
+      scale: 'random(0.5, 1.5)',
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: 0.5
+    })
+
+    // Morphing shapes animation (desktop only)
+    gsap.to('.morphing-shape', {
+      duration: 'random(4, 8)',
+      scale: 'random(0.5, 1.5)',
+      rotation: 'random(0, 360)',
+      borderRadius: 'random(0%, 50%)',
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: 0.5
+    })
+
+    // Enhanced 3D Orbit animation (desktop only)
+    gsap.to('.orbit-item', {
+      rotation: 360,
+      duration: 25,
+      repeat: -1,
+      ease: 'none',
+      transformOrigin: '50% 50%'
+    })
+
+    // 3D floating animation for orbit items (desktop only)
+    gsap.to('.orbit-item', {
+      y: 'random(-10, 10)',
+      z: 'random(-25, 25)',
+      rotationX: 'random(-8, 8)',
+      rotationY: 'random(-8, 8)',
+      duration: 'random(3, 5)',
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: 0.3
+    })
+
+    // Scroll indicator animation
+    gsap.to('.scroll-line', {
+      duration: 1.5,
+      scaleY: 0.3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'power2.inOut'
+    })
+
+    // Enhanced About section animations
+    gsap.fromTo(aboutTitle.value,
+      { y: 30, opacity: 0, rotationX: -5 },
+      { 
+        duration: 0.8, 
+        y: 0, 
+        opacity: 1, 
+        rotationX: 0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: aboutSection.value,
+          start: 'top 80%',
+          toggleActions: "play none none reverse"
+        }
+      }
+    )
+
+    gsap.fromTo(aboutDescription.value.children,
+      { y: 20, opacity: 0, rotationY: -3 },
+      { 
+        duration: 0.6, 
+        y: 0, 
+        opacity: 1, 
+        rotationY: 0,
+        stagger: 0.15,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: aboutDescription.value,
+          start: 'top 85%',
+          toggleActions: "play none none reverse"
+        }
+      }
+    )
+
+    gsap.fromTo('.orbit-item',
+      { scale: 0, opacity: 0, z: -50, rotationY: -90 },
+      { 
+        scale: 1, 
+        opacity: 1, 
+        z: 0,
+        rotationY: 0,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: 'back.out(1.4)',
+        scrollTrigger: {
+          trigger: aboutVisual.value,
+          start: 'top 80%',
+          toggleActions: "play none none reverse"
+        }
+      }
+    )
+
+    // Skills section animations
+    gsap.fromTo(skillsTitle.value,
+      { y: 50, opacity: 0 },
+      { 
+        duration: 1, 
+        y: 0, 
+        opacity: 1, 
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: skillsSection.value,
+          start: 'top 80%',
+          toggleActions: "play none none reverse"
+        }
+      }
+    )
+
+    gsap.fromTo('.skill-category',
+      { y: 50, opacity: 0, rotationY: -10 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        rotationY: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.skills-grid',
+          start: 'top 80%',
+          toggleActions: "play none none reverse"
+        }
+      }
+    )
+
+    // Skill bars animation
+    skillBars.value.forEach(bar => {
+      gsap.fromTo(bar,
+        { width: '0%' },
+        { 
+          width: bar.dataset.width,
+          duration: 1.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: bar,
+            start: 'top 90%',
+            toggleActions: "play none none reverse"
+          }
+        }
+      )
+    })
+
+    // Achievements animations
+    gsap.fromTo(achievementsTitle.value,
+      { y: 50, opacity: 0 },
+      { 
+        duration: 1, 
+        y: 0, 
+        opacity: 1, 
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: achievementsSection.value,
+          start: 'top 80%',
+          toggleActions: "play none none reverse"
+        }
+      }
+    )
+
+    gsap.fromTo('.achievement-card',
+      { y: 50, opacity: 0, rotationY: -15 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        rotationY: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.achievements-grid',
+          start: 'top 80%',
+          toggleActions: "play none none reverse"
+        }
+      }
+    )
+  }
+
+  // Counter animations (works on both desktop and mobile)
   statNumbers.value.forEach(el => {
     const target = el.dataset.target
     animateCounter(el, target)
   })
+})
 
-  // Enhanced floating elements animation
-  gsap.to('.floating-dot', {
-    duration: 'random(3, 6)',
-    y: 'random(-100, 100)',
-    x: 'random(-100, 100)',
-    rotation: 'random(0, 360)',
-    repeat: -1,
-    yoyo: true,
-    ease: 'sine.inOut',
-    stagger: {
-      amount: 2,
-      from: 'random'
-    }
-  })
-
-  // 3D Floating elements for about section
-  gsap.to('.floating-3d-dot', {
-    duration: 'random(4, 8)',
-    y: 'random(-50, 50)',
-    x: 'random(-30, 30)',
-    z: 'random(-100, 100)',
-    rotationX: 'random(0, 360)',
-    rotationY: 'random(0, 360)',
-    scale: 'random(0.5, 1.5)',
-    repeat: -1,
-    yoyo: true,
-    ease: 'sine.inOut',
-    stagger: 0.5
-  })
-
-  // Morphing shapes animation
-  gsap.to('.morphing-shape', {
-    duration: 'random(4, 8)',
-    scale: 'random(0.5, 1.5)',
-    rotation: 'random(0, 360)',
-    borderRadius: 'random(0%, 50%)',
-    repeat: -1,
-    yoyo: true,
-    ease: 'sine.inOut',
-    stagger: 0.5
-  })
-
-  // Scroll indicator animation
-  gsap.to('.scroll-line', {
-    duration: 1.5,
-    scaleY: 0.3,
-    repeat: -1,
-    yoyo: true,
-    ease: 'power2.inOut'
-  })
-
-  // Enhanced 3D About section animations
-  gsap.fromTo(aboutTitle.value,
-    { y: 30, opacity: 0, rotationX: -5 },
-    { 
-      duration: 0.8, 
-      y: 0, 
-      opacity: 1, 
-      rotationX: 0,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: aboutSection.value,
-        start: 'top 80%'
-      }
-    }
-  )
-
-  gsap.fromTo(aboutDescription.value.children,
-    { y: 20, opacity: 0, rotationY: -3 },
-    { 
-      duration: 0.6, 
-      y: 0, 
-      opacity: 1, 
-      rotationY: 0,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: aboutDescription.value,
-        start: 'top 85%'
-      }
-    }
-  )
-
-  // Enhanced 3D Orbit animation
-  gsap.to('.orbit-item', {
-    rotation: 360,
-    duration: 25,
-    repeat: -1,
-    ease: 'none',
-    transformOrigin: '50% 50%'
-  })
-
-  // 3D floating animation for orbit items
-  gsap.to('.orbit-item', {
-    y: 'random(-10, 10)',
-    z: 'random(-25, 25)',
-    rotationX: 'random(-8, 8)',
-    rotationY: 'random(-8, 8)',
-    duration: 'random(3, 5)',
-    repeat: -1,
-    yoyo: true,
-    ease: 'sine.inOut',
-    stagger: 0.3
-  })
-
-  gsap.fromTo('.orbit-item',
-    { scale: 0, opacity: 0, z: -50, rotationY: -90 },
-    { 
-      scale: 1, 
-      opacity: 1, 
-      z: 0,
-      rotationY: 0,
-      duration: 0.6,
-      stagger: 0.08,
-      ease: 'back.out(1.4)',
-      scrollTrigger: {
-        trigger: aboutVisual.value,
-        start: 'top 80%'
-      }
-    }
-  )
-
-  // Skills section animations
-  gsap.fromTo(skillsTitle.value,
-    { y: 50, opacity: 0 },
-    { 
-      duration: 1, 
-      y: 0, 
-      opacity: 1, 
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: skillsSection.value,
-        start: 'top 80%'
-      }
-    }
-  )
-
-  gsap.fromTo('.skill-category',
-    { y: 50, opacity: 0, rotationY: -10 },
-    { 
-      y: 0, 
-      opacity: 1, 
-      rotationY: 0,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.skills-grid',
-        start: 'top 80%'
-      }
-    }
-  )
-
-  // Skill bars animation
-  skillBars.value.forEach(bar => {
-    gsap.fromTo(bar,
-      { width: '0%' },
-      { 
-        width: bar.dataset.width,
-        duration: 1.5,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: bar,
-          start: 'top 90%'
-        }
-      }
-    )
-  })
-
-  // Achievements animations
-  gsap.fromTo(achievementsTitle.value,
-    { y: 50, opacity: 0 },
-    { 
-      duration: 1, 
-      y: 0, 
-      opacity: 1, 
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: achievementsSection.value,
-        start: 'top 80%'
-      }
-    }
-  )
-
-  gsap.fromTo('.achievement-card',
-    { y: 50, opacity: 0, rotationY: -15 },
-    { 
-      y: 0, 
-      opacity: 1, 
-      rotationY: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.achievements-grid',
-        start: 'top 80%'
-      }
-    }
-  )
+onUnmounted(() => {
+  // Clean up event listeners
+  window.removeEventListener('resize', checkMobileState)
+  window.removeEventListener('orientationchange', checkMobileState)
+  
+  // Kill all GSAP animations
+  gsap.killTweensOf("*")
+  ScrollTrigger.killAll()
 })
 </script>
 
 <style scoped>
+/* Add this to the beginning of your style section */
+.home-page {
+  background: #0a0a0a;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Mobile-specific fixes */
+.is-mobile {
+  cursor: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+.is-mobile * {
+  cursor: auto !important;
+  transform: none !important;
+  transform-style: flat !important;
+  perspective: none !important;
+  backface-visibility: visible !important;
+}
+
+.is-mobile .custom-cursor,
+.is-mobile .cursor-dot,
+.is-mobile .cursor-outline,
+.is-mobile .cursor-follower {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Rest of your styles remain the same */
+/* ... */
+
+/* Additional mobile optimizations */
+@media (max-width: 768px) {
+  html {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative !important;
+  }
+  
+  .home-page {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    position: relative !important;
+  }
+  
+  /* Disable all transforms and 3D effects on mobile */
+  * {
+    cursor: auto !important;
+    transform: none !important;
+    transform-style: flat !important;
+    perspective: none !important;
+    backface-visibility: visible !important;
+  }
+  
+  /* Disable problematic animations */
+  .floating-dot,
+  .morphing-shape,
+  .floating-3d-dot {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Reset orbit items */
+  .orbit-item {
+    animation: none !important;
+    transform: translate(var(--x, 0), var(--y, 0)) !important;
+  }
+  
+  /* Hide custom cursor elements */
+  .custom-cursor,
+  .cursor-dot,
+  .cursor-outline,
+  .cursor-follower {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Add this to disable custom cursor on mobile */
+.is-mobile {
+  cursor: auto !important;
+}
+
+.is-mobile * {
+  cursor: auto !important;
+}
+
+/* Hide any custom cursor elements on mobile */
+.is-mobile .custom-cursor,
+.is-mobile .cursor-dot,
+.is-mobile .cursor-outline,
+.is-mobile .cursor-follower {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -801,11 +1042,13 @@ onMounted(async () => {
 }
 
 .home-page {
-  padding-top: 0; /* Remove this, handle in individual sections */
   background: #0a0a0a;
   color: #ffffff;
   font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+  /* FIXED: Remove overflow-x hidden and add proper touch handling */
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
 .hero {
@@ -815,10 +1058,12 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  /* FIXED: Remove perspective on mobile to prevent scroll issues */
   perspective: 1000px;
   padding-top: 80px;
   padding-bottom: 2rem;
+  /* FIXED: Ensure proper overflow handling */
+  overflow: visible;
 }
 
 .hero-bg {
@@ -828,6 +1073,8 @@ onMounted(async () => {
   right: 0;
   bottom: 0;
   z-index: -1;
+  /* FIXED: Prevent background from interfering with scroll */
+  pointer-events: none;
 }
 
 .grid-overlay {
@@ -883,6 +1130,9 @@ onMounted(async () => {
   padding: 0 clamp(1rem, 3vw, 2rem);
   width: 100%;
   align-items: start;
+  /* FIXED: Ensure content doesn't interfere with scroll */
+  position: relative;
+  z-index: 1;
 }
 
 .hero-left {
@@ -1008,6 +1258,8 @@ onMounted(async () => {
   text-decoration: none;
   color: inherit;
   backdrop-filter: blur(10px);
+  /* FIXED: Ensure cards don't interfere with scroll on mobile */
+  touch-action: manipulation;
 }
 
 .category-card.coming-soon {
@@ -1159,11 +1411,13 @@ onMounted(async () => {
 .skills-section,
 .achievements-section {
   padding: clamp(4rem, 10vw, 8rem) 0;
+  /* FIXED: Ensure sections don't interfere with scroll */
+  position: relative;
 }
 
 .about-section {
   background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 136, 0.02) 50%, transparent 100%);
-  perspective: 1000px;
+  /* FIXED: Remove perspective on mobile */
 }
 
 .about-content {
@@ -1181,6 +1435,7 @@ onMounted(async () => {
 }
 
 .about-visual {
+  /* FIXED: Conditional perspective for mobile */
   perspective: 1000px;
   transform-style: preserve-3d;
 }
@@ -1198,6 +1453,7 @@ onMounted(async () => {
   position: relative;
   width: clamp(200px, 40vw, 300px);
   height: clamp(200px, 40vw, 300px);
+  /* FIXED: Conditional transform-style for mobile */
   transform-style: preserve-3d;
 }
 
@@ -1242,6 +1498,8 @@ onMounted(async () => {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transform-style: preserve-3d;
   cursor: pointer;
+  /* FIXED: Ensure orbit items don't interfere with scroll */
+  touch-action: manipulation;
 }
 
 @keyframes orbit-float {
@@ -1420,6 +1678,8 @@ onMounted(async () => {
   overflow: hidden;
   backdrop-filter: blur(10px);
   cursor: pointer;
+  /* FIXED: Ensure achievement cards don't interfere with scroll */
+  touch-action: manipulation;
 }
 
 .achievement-card::before {
@@ -1538,13 +1798,23 @@ onMounted(async () => {
   }
 }
 
+/* FIXED: Enhanced mobile styles with proper scroll handling */
 @media (max-width: 768px) {
+  .home-page {
+    /* FIXED: Ensure proper mobile scroll behavior */
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
   .hero {
     height: auto;
     min-height: 100vh;
     padding-top: 100px;
     align-items: flex-start;
     padding-bottom: 3rem;
+    /* FIXED: Remove perspective on mobile */
+    perspective: none;
   }
   
   .hero-content {
@@ -1555,7 +1825,7 @@ onMounted(async () => {
   }
   
   .scroll-indicator {
-    display: none; /* Hide scroll indicator on mobile */
+    display: none;
   }
 
   .categories-grid {
@@ -1604,6 +1874,29 @@ onMounted(async () => {
   .skill-text {
     font-size: clamp(0.45rem, 1vw, 0.6rem);
   }
+
+  /* FIXED: Disable 3D transforms on mobile */
+  .about-visual {
+    perspective: none;
+    transform-style: flat;
+  }
+
+  .skill-orbit {
+    transform-style: flat;
+  }
+
+  .orbit-item {
+    transform-style: flat;
+  }
+
+  @keyframes orbit-float {
+    0%, 100% { 
+      transform: translate(var(--x, 0), var(--y, 0)) scale(1); 
+    }
+    50% { 
+      transform: translate(var(--x, 0), var(--y, 0)) scale(1.1); 
+    }
+  }
 }
 
 @media (max-width: 480px) {
@@ -1624,7 +1917,7 @@ onMounted(async () => {
   }
   
   .categories-grid {
-    margin-bottom: 2rem; /* Add bottom margin to ensure cards are visible */
+    margin-bottom: 2rem;
   }
 
   .hero-title {
@@ -1761,35 +2054,7 @@ onMounted(async () => {
   }
 }
 
-/* Mobile hero adjustments */
-@media (max-width: 768px) {
-  .hero {
-    height: auto;
-    min-height: 500px;
-    padding-top: 100px; /* Increase padding for mobile navbar */
-    align-items: flex-start;
-    padding-bottom: 2rem;
-  }
-  
-  .hero-content {
-    margin-top: clamp(1rem, 5vw, 2rem);
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero {
-    min-height: 450px;
-    padding-top: 120px; /* Even more padding for small screens */
-  }
-  
-  .hero-title {
-    margin-top: 0;
-    line-height: 0.85; /* Tighter line height to fit better */
-  }
-}
-
-/* Custom scrollbar */
+/* FIXED: Custom scrollbar with mobile optimization */
 ::-webkit-scrollbar {
   width: clamp(6px, 1.5vw, 8px);
 }
@@ -1805,5 +2070,41 @@ onMounted(async () => {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(45deg, #00d4ff, #00ff88);
+}
+
+/* FIXED: Mobile-specific scroll improvements */
+@media (max-width: 768px) {
+  /* Force default cursor on mobile */
+  * {
+    cursor: auto !important;
+  }
+  
+  /* Hide any custom cursor elements */
+  .custom-cursor,
+  .cursor-dot,
+  .cursor-outline,
+  .cursor-follower {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  
+  /* Hide scrollbar on mobile for cleaner look */
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+  
+  /* Ensure smooth scrolling on mobile */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
 }
 </style>
