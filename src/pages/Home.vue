@@ -221,9 +221,9 @@ const achievementsTitle = ref(null)
 const achievementCards = ref([])
 
 const stats = [
-  { value: '50+', label: 'PROJECTS' },
-  { value: '6', label: 'YEARS' },
-  { value: '15+', label: 'CLIENTS' }
+  { value: '150+', label: 'PROJECTS' },
+  { value: '8+', label: 'YEARS' },
+  { value: '40+', label: 'CLIENTS' }
 ]
 
 const categories = [
