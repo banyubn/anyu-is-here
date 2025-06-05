@@ -44,6 +44,8 @@
             </button>
           </div>
         </div>
+
+        <DisclaimerBanner />
         
         <div class="certificate-grid">
           <div 
@@ -141,6 +143,7 @@ import {
   Code, Palette, Cloud, Database, Globe, Zap
 } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
+import DisclaimerBanner from '../components/DisclaimerBanner.vue'
 
 const selectedCategory = ref('All')
 

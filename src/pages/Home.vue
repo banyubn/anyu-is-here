@@ -250,8 +250,8 @@ const categories = [
     name: 'MUSIC PRODUCTION',
     description: 'Creating immersive audio experiences',
     icon: Music,
-    technologies: ['Ableton Live', 'Logic Pro', 'Serum', 'Kontakt'],
-    comingSoon: true,
+    technologies: ['FL Studio', 'Sytrus', 'Serum', 'Kontakt'],
+    comingSoon: false,
     path: '/music-production'
   },
   {
@@ -320,32 +320,33 @@ const skillCategories = [
 const achievements = [
   {
     id: 1,
-    title: 'AWS Certified Solutions Architect',
-    description: 'Professional certification in cloud architecture and solutions design',
+    title: 'LKS National Champion',
+    description: 'Proved skills on the national stage. Excellence through competition.',
     year: '2023',
     icon: Trophy
   },
   {
     id: 2,
-    title: '50M+ Video Views',
+    title: '10M+ Video Views',
     description: 'Cumulative views across all video editing projects and content',
-    year: '2024',
+    year: '2021',
     icon: Star
   },
   {
     id: 3,
     title: '100+ Projects Completed',
     description: 'Successfully delivered diverse projects across multiple domains',
-    year: '2024',
+    year: '2022',
     icon: Target
   },
   {
     id: 4,
-    title: 'Top Rated Freelancer',
-    description: 'Maintained 5-star rating with 100% client satisfaction',
-    year: '2023',
+    title: 'Certified Good-Looking',
+    description: 'Blessed with both skills and looks.',
+    year: 'jk :/',
     icon: Rocket
   }
+
 ]
 
 // Methods

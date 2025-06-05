@@ -115,11 +115,44 @@
       <!-- Tech Stack Carousel -->
       <section class="tech-stack-carousel">
         <h2 class="section-subtitle">TECH STACK</h2>
-        <div class="carousel">
-          <div class="track" ref="track">
-            <div v-for="(tech, index) in techStack" :key="index" class="tech-tag-carousel">
-              {{ tech }}
+        <div class="carousel-container">
+          <!-- Row 1 - Moving Right -->
+          <div class="carousel">
+            <div class="track track-right" ref="trackRight1">
+              <div v-for="(tech, index) in [...techStackRow1, ...techStackRow1, ...techStackRow1]" :key="`row1-${index}`" class="tech-tag-carousel">
+                <component :is="getTechIcon(tech)" class="tech-chip-icon" />
+                <span>{{ tech }}</span>
+              </div>
             </div>
+            <!-- Fade overlays -->
+            <div class="carousel-fade-left"></div>
+            <div class="carousel-fade-right"></div>
+          </div>
+          
+          <!-- Row 2 - Moving Left -->
+          <div class="carousel">
+            <div class="track track-left" ref="trackLeft">
+              <div v-for="(tech, index) in [...techStackRow2, ...techStackRow2, ...techStackRow2]" :key="`row2-${index}`" class="tech-tag-carousel">
+                <component :is="getTechIcon(tech)" class="tech-chip-icon" />
+                <span>{{ tech }}</span>
+              </div>
+            </div>
+            <!-- Fade overlays -->
+            <div class="carousel-fade-left"></div>
+            <div class="carousel-fade-right"></div>
+          </div>
+          
+          <!-- Row 3 - Moving Right -->
+          <div class="carousel">
+            <div class="track track-right" ref="trackRight2">
+              <div v-for="(tech, index) in [...techStackRow3, ...techStackRow3, ...techStackRow3]" :key="`row3-${index}`" class="tech-tag-carousel">
+                <component :is="getTechIcon(tech)" class="tech-chip-icon" />
+                <span>{{ tech }}</span>
+              </div>
+            </div>
+            <!-- Fade overlays -->
+            <div class="carousel-fade-left"></div>
+            <div class="carousel-fade-right"></div>
           </div>
         </div>
       </section>
@@ -172,7 +205,24 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Code, ExternalLink } from 'lucide-vue-next'
+import { 
+  Code, 
+  ExternalLink, 
+  Database, 
+  Server, 
+  Globe, 
+  Smartphone, 
+  GitBranch, 
+  Container, 
+  Cloud, 
+  Flame,
+  Layers,
+  FileCode,
+  Palette,
+  Zap,
+  Settings,
+  Box
+} from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -187,6 +237,38 @@ const progressBars = ref([])
 const percentageNumbers = ref([])
 const track = ref(null)
 const selectedProject = ref(null)
+
+// New refs for the three carousel tracks
+const trackRight1 = ref(null)
+const trackLeft = ref(null)
+const trackRight2 = ref(null)
+
+// Tech icon mapping
+const techIconMap = {
+  'JavaScript': Code,
+  'TypeScript': FileCode,
+  'Vue.js': Layers,
+  'React': Zap,
+  'Node.js': Server,
+  'Express': Server,
+  'MongoDB': Database,
+  'PostgreSQL': Database,
+  'Python': Code,
+  'PHP': Globe,
+  'HTML': Globe,
+  'CSS': Palette,
+  'Git': GitBranch,
+  'Docker': Container,
+  'AWS': Cloud,
+  'Firebase': Flame,
+  'Laravel': Settings,
+  'Nuxt.js': Box
+}
+
+// Method to get tech icon
+const getTechIcon = (techName) => {
+  return techIconMap[techName] || Code
+}
 
 const programmingStats = [
   { 
@@ -271,6 +353,12 @@ const programmingStats = [
   }
 ]
 
+// Split tech stack into three rows
+const techStackRow1 = ['JavaScript', 'TypeScript', 'Vue.js', 'React', 'Node.js', 'Express']
+const techStackRow2 = ['MongoDB', 'PostgreSQL', 'Python', 'PHP', 'HTML', 'CSS']
+const techStackRow3 = ['Git', 'Docker', 'AWS', 'Firebase', 'Laravel', 'Nuxt.js']
+
+// Original tech stack array (keep for compatibility)
 const techStack = [
   'JavaScript', 'TypeScript', 'Vue.js', 'React', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Python', 'PHP', 'HTML', 'CSS', 'Git', 'Docker', 'AWS', 'Firebase'
 ]
@@ -288,21 +376,28 @@ const projects = [
     name: 'Late Recapitulation',
     description: "Student's presence manager with VueJS and Laravel",
     tech: ['Vue', 'Laravel', 'Vuetify', 'MySQL'],
-    image: '/images/projects/task-app.jpg'
+    image: new URL('../assets/programming/late-recapitulation.png', import.meta.url).href
   },
   {
     id: 3,
     name: 'Ticketing App',
     description: 'Booking simulation mobile application',
     tech: ['Flutter', 'Firebase'],
-    image: '/images/projects/portfolio.jpg'
+    image: new URL('../assets/programming/ticketing-app.png', import.meta.url).href
   },
   {
     id: 4,
     name: 'Makan Cuy',
-    description: 'Food E-Commerce web application',
+    description: 'An award-winning LKS project that won first place, a food E-Commerce web application',
     tech: ['Vue', 'Vuetify', 'Lumen', 'MySQL'],
-    image: '/images/projects/music-app.jpg'
+    image: new URL('../assets/programming/makan-cuy.png', import.meta.url).href
+  },
+  {
+    id: 5,
+    name: 'Football Gaul',
+    description: '2D football game I made with Javascript',
+    tech: ['Native Javascript'],
+    image: new URL('../assets/programming/football-wow.png', import.meta.url).href
   }
 ]
 
@@ -484,16 +579,52 @@ onMounted(async () => {
     }
   )
 
-  // Carousel animation
-  if (track.value) {
-    const scrollWidth = track.value.scrollWidth
-    const clientWidth = track.value.clientWidth
-
-    gsap.to(track.value, {
-      x: () => -(scrollWidth - clientWidth),
-      duration: 15,
+  // Improved infinite carousel animations with portal effect
+  // Row 1 - Moving Right (portal effect)
+  if (trackRight1.value) {
+    const totalWidth = trackRight1.value.scrollWidth / 3 // Divide by 3 because we tripled the content
+    
+    gsap.set(trackRight1.value, { x: 0 })
+    gsap.to(trackRight1.value, {
+      x: -totalWidth,
+      duration: 25,
       ease: 'none',
       repeat: -1,
+      modifiers: {
+        x: gsap.utils.unitize(x => parseFloat(x) % totalWidth)
+      }
+    })
+  }
+
+  // Row 2 - Moving Left (portal effect)
+  if (trackLeft.value) {
+    const totalWidth = trackLeft.value.scrollWidth / 3 // Divide by 3 because we tripled the content
+    
+    gsap.set(trackLeft.value, { x: -totalWidth })
+    gsap.to(trackLeft.value, {
+      x: 0,
+      duration: 20,
+      ease: 'none',
+      repeat: -1,
+      modifiers: {
+        x: gsap.utils.unitize(x => parseFloat(x) % totalWidth)
+      }
+    })
+  }
+
+  // Row 3 - Moving Right (portal effect)
+  if (trackRight2.value) {
+    const totalWidth = trackRight2.value.scrollWidth / 3 // Divide by 3 because we tripled the content
+    
+    gsap.set(trackRight2.value, { x: 0 })
+    gsap.to(trackRight2.value, {
+      x: -totalWidth,
+      duration: 30,
+      ease: 'none',
+      repeat: -1,
+      modifiers: {
+        x: gsap.utils.unitize(x => parseFloat(x) % totalWidth)
+      }
     })
   }
 })
@@ -858,25 +989,90 @@ onMounted(async () => {
   margin-bottom: 3rem;
 }
 
+/* New carousel container for multiple rows */
+.carousel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .carousel {
   overflow: hidden;
   border-radius: 10px;
+  position: relative;
 }
 
+/* Fade overlays for smooth edges */
+.carousel-fade-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(10, 10, 10, 1), rgba(10, 10, 10, 0.8), transparent);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.carousel-fade-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(10, 10, 10, 1), rgba(10, 10, 10, 0.8), transparent);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Infinite carousel improvements with portal effect */
 .track {
   display: flex;
   width: fit-content;
+  will-change: transform;
 }
 
 .tech-tag-carousel {
   background: rgba(0, 255, 136, 0.1);
   border: 1px solid rgba(0, 255, 136, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 1rem;
   white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.tech-chip-icon {
+  width: 18px;
+  height: 18px;
+  color: #00ff88;
+  flex-shrink: 0;
+}
+
+.tech-tag-carousel:hover {
+  background: rgba(0, 255, 136, 0.2);
+  border-color: rgba(0, 255, 136, 0.5);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 136, 0.2);
+}
+
+.tech-tag-carousel:hover .tech-chip-icon {
+  color: #ffffff;
+}
+
+/* Pause animation on hover */
+.carousel:hover .track {
+  animation-play-state: paused;
 }
 
 /* Projects Showcase */
@@ -1078,6 +1274,11 @@ onMounted(async () => {
   .languages-grid {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
+
+  .carousel-fade-left,
+  .carousel-fade-right {
+    width: 60px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1108,6 +1309,18 @@ onMounted(async () => {
     justify-content: center;
     margin-bottom: 1rem;
   }
+
+  .tech-tag-carousel {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    min-width: 100px;
+    margin: 0.5rem 0.8rem;
+  }
+
+  .carousel-fade-left,
+  .carousel-fade-right {
+    width: 40px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1127,6 +1340,23 @@ onMounted(async () => {
   .language-details {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .tech-tag-carousel {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+    min-width: 80px;
+    margin: 0.5rem 0.6rem;
+  }
+
+  .carousel-fade-left,
+  .carousel-fade-right {
+    width: 30px;
+  }
+
+  .tech-chip-icon {
+    width: 16px;
+    height: 16px;
   }
 }
 </style>

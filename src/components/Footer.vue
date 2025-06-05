@@ -17,15 +17,15 @@
             <div class="footer-column">
               <h3 class="column-title">Connect</h3>
               <div class="social-links">
-                <a href="#" class="social-link">
+                <a href="mailto:banyubagastaranugroho@gmail.com" class="social-link">
                   <Mail class="social-icon" />
                   <span>Email</span>
                 </a>
-                <a href="#" class="social-link">
+                <a href="https://www.linkedin.com/in/banyubn/" target="_blank" class="social-link">
                   <Linkedin class="social-icon" />
                   <span>LinkedIn</span>
                 </a>
-                <a href="#" class="social-link">
+                <a href="https://github.com/banyubn" target="_blank" class="social-link">
                   <Github class="social-icon" />
                   <span>GitHub</span>
                 </a>

@@ -89,18 +89,6 @@
               </div>
             </div>
           </div>
-          
-          <div class="notify-section">
-            <h3 class="notify-title">Get Notified</h3>
-            <p class="notify-description">Be the first to hear my latest tracks and compositions</p>
-            <div class="notify-form">
-              <input type="email" placeholder="Enter your email" class="email-input" />
-              <button class="notify-btn">
-                <Bell class="notify-icon" />
-                Notify Me
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
