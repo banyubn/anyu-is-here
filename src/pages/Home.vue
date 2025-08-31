@@ -402,7 +402,7 @@ const achievements = [
   },
   {
     id: 2,
-    title: '10M+ Video Views',
+    title: '50M+ Video Views',
     description: 'Cumulative views across all video editing projects and content',
     year: '2021',
     icon: Star,
