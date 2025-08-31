@@ -12,7 +12,7 @@
           <div v-for="i in 5" :key="i" class="morphing-shape" :style="getShapeStyle(i)"></div>
         </div>
       </div>
-      
+
       <div class="hero-content">
         <div class="hero-left">
           <div ref="heroTitle" class="hero-title">
@@ -26,7 +26,7 @@
           <div class="hero-description">
             <p>Crafting digital experiences through code, visuals, and sound</p>
           </div>
-          
+
           <div ref="heroStats" class="hero-stats">
             <div v-for="stat in stats" :key="stat.label" class="stat-item">
               <span ref="statNumbers" class="stat-number" :data-target="stat.value">0</span>
@@ -34,16 +34,16 @@
             </div>
           </div>
         </div>
-        
+
         <div class="hero-right">
           <h2 class="section-title">
             <span class="title-bg">EXPERTISE</span>
             WHAT I DO
           </h2>
-          
+
           <div ref="categoryCards" class="categories-grid">
-            <router-link 
-              v-for="category in categories" 
+            <router-link
+              v-for="category in categories"
               :key="category.id"
               :to="category.path"
               class="category-card"
@@ -92,14 +92,14 @@
             </h2>
             <div ref="aboutDescription" class="about-description">
               <p>
-                I'm a passionate creator who bridges the gap between technology and artistry. 
-                With over 4 years of experience in full-stack development, video editing, and music production, 
-                I bring a unique perspective to every project.
+                I'm a passionate creator who bridges the gap between technology and artistry. With
+                over 4 years of experience in full-stack development, video editing, and music
+                production, I bring a unique perspective to every project.
               </p>
               <p>
-                My journey started with curiosity about how things work, which led me to programming. 
-                Along the way, I discovered my love for visual storytelling and audio composition, 
-                creating a perfect blend of technical expertise and creative vision.
+                My journey started with curiosity about how things work, which led me to
+                programming. Along the way, I discovered my love for visual storytelling and audio
+                composition, creating a perfect blend of technical expertise and creative vision.
               </p>
             </div>
           </div>
@@ -109,18 +109,26 @@
                 <div class="orbit-center">
                   <span class="center-text">SKILLS</span>
                 </div>
-                <div v-for="(skill, index) in orbitSkills" :key="skill" 
-                     class="orbit-item" 
-                     :style="getOrbitPosition(index, orbitSkills.length)"
-                     @mouseenter="onOrbitItemHover"
-                     @mouseleave="onOrbitItemLeave">
+                <div
+                  v-for="(skill, index) in orbitSkills"
+                  :key="skill"
+                  class="orbit-item"
+                  :style="getOrbitPosition(index, orbitSkills.length)"
+                  @mouseenter="onOrbitItemHover"
+                  @mouseleave="onOrbitItemLeave"
+                >
                   <span class="skill-text">{{ skill }}</span>
                   <div class="orbit-glow"></div>
                 </div>
               </div>
               <!-- 3D Floating Elements -->
               <div class="floating-3d-elements">
-                <div v-for="i in 8" :key="i" class="floating-3d-dot" :style="get3DPosition(i)"></div>
+                <div
+                  v-for="i in 8"
+                  :key="i"
+                  class="floating-3d-dot"
+                  :style="get3DPosition(i)"
+                ></div>
               </div>
             </div>
           </div>
@@ -136,9 +144,12 @@
           TECHNICAL EXPERTISE
         </h2>
         <div class="skills-grid">
-          <div v-for="skillCategory in skillCategories" :key="skillCategory.name" 
-               ref="skillCards"
-               class="skill-category">
+          <div
+            v-for="skillCategory in skillCategories"
+            :key="skillCategory.name"
+            ref="skillCards"
+            class="skill-category"
+          >
             <div class="skill-category-header">
               <component :is="skillCategory.icon" class="skill-category-icon" />
               <h3 class="skill-category-name">{{ skillCategory.name }}</h3>
@@ -147,10 +158,12 @@
               <div v-for="skill in skillCategory.skills" :key="skill.name" class="skill-item">
                 <span class="skill-name">{{ skill.name }}</span>
                 <div class="skill-bar">
-                  <div ref="skillBars" 
-                       class="skill-progress" 
-                       :data-width="skill.level + '%'"
-                       :style="{ backgroundColor: skillCategory.color }"></div>
+                  <div
+                    ref="skillBars"
+                    class="skill-progress"
+                    :data-width="skill.level + '%'"
+                    :style="{ backgroundColor: skillCategory.color }"
+                  ></div>
                 </div>
                 <span class="skill-level">{{ skill.level }}%</span>
               </div>
@@ -168,11 +181,14 @@
           MILESTONES
         </h2>
         <div class="achievements-grid">
-          <div v-for="achievement in achievements" :key="achievement.id" 
-               ref="achievementCards"
-               class="achievement-card"
-               @mouseenter="onAchievementHover"
-               @mouseleave="onAchievementLeave">
+          <div
+            v-for="achievement in achievements"
+            :key="achievement.id"
+            ref="achievementCards"
+            class="achievement-card"
+            @mouseenter="onAchievementHover"
+            @mouseleave="onAchievementLeave"
+          >
             <div class="achievement-icon">
               <component :is="achievement.icon" class="achievement-icon-svg" />
             </div>
@@ -192,9 +208,19 @@
 import { ref, onMounted, nextTick, onBeforeMount, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { 
-  Code, Video, Music, Award, Palette, Database, 
-  Globe, Zap, Trophy, Star, Target, Rocket
+import {
+  Code,
+  Video,
+  Music,
+  Award,
+  Palette,
+  Database,
+  Globe,
+  Zap,
+  Trophy,
+  Star,
+  Target,
+  Rocket,
 } from 'lucide-vue-next'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -226,13 +252,16 @@ const achievementCards = ref([])
 
 // Check if device is mobile
 const isMobile = () => {
-  return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  return (
+    window.innerWidth <= 768 ||
+    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  )
 }
 
 // Update mobile state and handle custom cursor
 const checkMobileState = () => {
   isMobileDevice.value = isMobile()
-  
+
   // If there's a custom cursor element, hide it on mobile
   const customCursor = document.querySelector('.custom-cursor')
   if (customCursor) {
@@ -254,16 +283,16 @@ const fixMobileScroll = () => {
     document.documentElement.style.overflow = 'auto'
     document.documentElement.style.overflowX = 'hidden'
     document.documentElement.style.height = 'auto'
-    
+
     // Force refresh of scroll
     window.scrollTo(0, window.scrollY)
   }
 }
 
 const stats = [
-  { value: '150+', label: 'PROJECTS' },
+  { value: '350+', label: 'PROJECTS' },
   { value: '8+', label: 'YEARS' },
-  { value: '40+', label: 'CLIENTS' }
+  { value: '70+', label: 'CLIENTS' },
 ]
 
 const categories = [
@@ -274,7 +303,7 @@ const categories = [
     icon: Code,
     technologies: ['Vue.js', 'React', 'Node.js', 'Python', 'TypeScript'],
     comingSoon: false,
-    path: '/programming'
+    path: '/programming',
   },
   {
     id: 'video',
@@ -283,7 +312,7 @@ const categories = [
     icon: Video,
     technologies: ['After Effects', 'Premiere Pro', 'DaVinci', 'Blender'],
     comingSoon: false,
-    path: '/video-editing'
+    path: '/video-editing',
   },
   {
     id: 'music',
@@ -292,7 +321,7 @@ const categories = [
     icon: Music,
     technologies: ['FL Studio', 'Sytrus', 'Serum', 'Kontakt'],
     comingSoon: false,
-    path: '/music-production'
+    path: '/music-production',
   },
   {
     id: 'certificates',
@@ -301,13 +330,19 @@ const categories = [
     icon: Award,
     technologies: ['AWS', 'Google Cloud', 'Microsoft', 'Adobe'],
     comingSoon: false,
-    path: '/certificates'
-  }
+    path: '/certificates',
+  },
 ]
 
 const orbitSkills = [
-  'Vue.js', 'React', 'Node.js', 'Python', 'After Effects', 
-  'Premiere Pro', 'Ableton Live', 'TypeScript'
+  'Vue.js',
+  'React',
+  'Node.js',
+  'Python',
+  'After Effects',
+  'Premiere Pro',
+  'Ableton Live',
+  'TypeScript',
 ]
 
 const skillCategories = [
@@ -319,8 +354,8 @@ const skillCategories = [
       { name: 'Vue.js', level: 90 },
       { name: 'React', level: 85 },
       { name: 'Tailwind CSS', level: 88 },
-      { name: 'GSAP', level: 82 }
-    ]
+      { name: 'GSAP', level: 82 },
+    ],
   },
   {
     name: 'Backend Development',
@@ -330,8 +365,8 @@ const skillCategories = [
       { name: 'LUMEN', level: 85 },
       { name: 'SQL', level: 80 },
       { name: 'Express', level: 75 },
-      { name: 'PostgreSQL', level: 78 }
-    ]
+      { name: 'PostgreSQL', level: 78 },
+    ],
   },
   {
     name: 'Creative Tools',
@@ -341,8 +376,8 @@ const skillCategories = [
       { name: 'After Effects', level: 90 },
       { name: 'Premiere Pro', level: 88 },
       { name: 'Photoshop', level: 85 },
-      { name: 'FL Studio', level: 80 }
-    ]
+      { name: 'FL Studio', level: 80 },
+    ],
   },
   {
     name: 'DevOps & Tools',
@@ -352,9 +387,9 @@ const skillCategories = [
       { name: 'Docker', level: 25 },
       { name: 'Git', level: 90 },
       { name: 'WSL', level: 70 },
-      { name: 'SQLWorkBench', level: 65 }
-    ]
-  }
+      { name: 'SQLWorkBench', level: 65 },
+    ],
+  },
 ]
 
 const achievements = [
@@ -363,36 +398,36 @@ const achievements = [
     title: 'LKS National Champion',
     description: 'Proved skills on the national stage. Excellence through competition.',
     year: '2023',
-    icon: Trophy
+    icon: Trophy,
   },
   {
     id: 2,
     title: '10M+ Video Views',
     description: 'Cumulative views across all video editing projects and content',
     year: '2021',
-    icon: Star
+    icon: Star,
   },
   {
     id: 3,
     title: '100+ Projects Completed',
     description: 'Successfully delivered diverse projects across multiple domains',
     year: '2022',
-    icon: Target
+    icon: Target,
   },
   {
     id: 4,
     title: 'Certified Cool Guy',
     description: 'Certified in spreading good vibes',
     year: 'jk :/',
-    icon: Rocket
-  }
+    icon: Rocket,
+  },
 ]
 
 // Methods
 const getRandomPosition = () => ({
   left: Math.random() * 100 + '%',
   top: Math.random() * 100 + '%',
-  animationDelay: Math.random() * 2 + 's'
+  animationDelay: Math.random() * 2 + 's',
 })
 
 const getShapeStyle = (index) => {
@@ -401,25 +436,25 @@ const getShapeStyle = (index) => {
     { left: '80%', top: '10%', size: '60px' },
     { left: '70%', top: '70%', size: '80px' },
     { left: '20%', top: '80%', size: '120px' },
-    { left: '50%', top: '50%', size: '40px' }
+    { left: '50%', top: '50%', size: '40px' },
   ]
   return {
     left: shapes[index - 1]?.left || '50%',
     top: shapes[index - 1]?.top || '50%',
     width: shapes[index - 1]?.size || '60px',
     height: shapes[index - 1]?.size || '60px',
-    animationDelay: (index * 0.5) + 's'
+    animationDelay: index * 0.5 + 's',
   }
 }
 
 const getOrbitPosition = (index, total) => {
   const angle = (index / total) * 360
   const radius = 120
-  const x = Math.cos(angle * Math.PI / 180) * radius
-  const y = Math.sin(angle * Math.PI / 180) * radius
+  const x = Math.cos((angle * Math.PI) / 180) * radius
+  const y = Math.sin((angle * Math.PI) / 180) * radius
   return {
     transform: `translate(${x}px, ${y}px)`,
-    animationDelay: (index * 0.2) + 's'
+    animationDelay: index * 0.2 + 's',
   }
 }
 
@@ -432,153 +467,153 @@ const get3DPosition = (index) => {
     { left: '50%', top: '10%', animationDelay: '2s' },
     { left: '90%', top: '50%', animationDelay: '2.5s' },
     { left: '5%', top: '45%', animationDelay: '3s' },
-    { left: '60%', top: '90%', animationDelay: '3.5s' }
+    { left: '60%', top: '90%', animationDelay: '3.5s' },
   ]
   return positions[index - 1] || { left: '50%', top: '50%', animationDelay: '0s' }
 }
 
 const onCardHover = (event) => {
   if (isMobileDevice.value) return // Disable hover effects on mobile
-  
+
   const card = event.currentTarget
   const overlay = card.querySelector('.card-overlay')
   const iconWrapper = card.querySelector('.card-icon-wrapper')
   const techTags = card.querySelectorAll('.tech-tag')
-  
+
   if (!card.classList.contains('coming-soon')) {
     gsap.to(card, {
       duration: 0.15,
       y: -10,
       scale: 1.02,
       rotationY: 5,
-      ease: 'power2.out'
+      ease: 'power2.out',
     })
-    
+
     gsap.to(overlay, {
       duration: 0.15,
       opacity: 1,
-      ease: 'power2.out'
+      ease: 'power2.out',
     })
 
     gsap.to(iconWrapper, {
       duration: 0.15,
       scale: 1.1,
       rotationY: 10,
-      ease: 'power2.out'
+      ease: 'power2.out',
     })
 
     gsap.to(techTags, {
       duration: 0.15,
       y: -2,
       stagger: 0.02,
-      ease: 'power2.out'
+      ease: 'power2.out',
     })
   }
 }
 
 const onCardLeave = (event) => {
   if (isMobileDevice.value) return // Disable hover effects on mobile
-  
+
   const card = event.currentTarget
   const overlay = card.querySelector('.card-overlay')
   const iconWrapper = card.querySelector('.card-icon-wrapper')
   const techTags = card.querySelectorAll('.tech-tag')
-  
+
   gsap.to(card, {
     duration: 0.15,
     y: 0,
     scale: 1,
     rotationY: 0,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
-  
+
   gsap.to(overlay, {
     duration: 0.15,
     opacity: 0,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 
   gsap.to(iconWrapper, {
     duration: 0.15,
     scale: 1,
     rotationY: 0,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 
   gsap.to(techTags, {
     duration: 0.15,
     y: 0,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 }
 
 const onOrbitItemHover = (event) => {
   if (isMobileDevice.value) return // Disable hover effects on mobile
-  
+
   const item = event.currentTarget
   gsap.to(item, {
     duration: 0.15,
     scale: 1.3,
     z: 50,
     rotationY: 15,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 }
 
 const onOrbitItemLeave = (event) => {
   if (isMobileDevice.value) return // Disable hover effects on mobile
-  
+
   const item = event.currentTarget
   gsap.to(item, {
     duration: 0.15,
     scale: 1,
     z: 0,
     rotationY: 0,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 }
 
 const onAchievementHover = (event) => {
   if (isMobileDevice.value) return // Disable hover effects on mobile
-  
+
   const card = event.currentTarget
   const icon = card.querySelector('.achievement-icon')
-  
+
   gsap.to(card, {
     duration: 0.15,
     y: -15,
     rotationY: 8,
     scale: 1.02,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 
   gsap.to(icon, {
     duration: 0.15,
     scale: 1.15,
     rotationY: 20,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 }
 
 const onAchievementLeave = (event) => {
   if (isMobileDevice.value) return // Disable hover effects on mobile
-  
+
   const card = event.currentTarget
   const icon = card.querySelector('.achievement-icon')
-  
+
   gsap.to(card, {
     duration: 0.15,
     y: 0,
     rotationY: 0,
     scale: 1,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 
   gsap.to(icon, {
     duration: 0.15,
     scale: 1,
     rotationY: 0,
-    ease: 'power2.out'
+    ease: 'power2.out',
   })
 }
 
@@ -588,16 +623,20 @@ const animateCounter = (element, target) => {
     element.textContent = '∞'
     return
   }
-  
+
   const numTarget = parseInt(target)
-  gsap.to({ value: 0 }, {
-    duration: 2,
-    value: numTarget,
-    ease: 'power2.out',
-    onUpdate: function() {
-      element.textContent = Math.round(this.targets()[0].value) + (target.includes('+') ? '+' : '')
-    }
-  })
+  gsap.to(
+    { value: 0 },
+    {
+      duration: 2,
+      value: numTarget,
+      ease: 'power2.out',
+      onUpdate: function () {
+        element.textContent =
+          Math.round(this.targets()[0].value) + (target.includes('+') ? '+' : '')
+      },
+    },
+  )
 }
 
 onBeforeMount(() => {
@@ -609,19 +648,19 @@ onBeforeMount(() => {
 
 onMounted(async () => {
   await nextTick()
-  
+
   // Check mobile state again after mounting
   checkMobileState()
-  
+
   // Fix mobile scroll issues
   fixMobileScroll()
-  
+
   // Add resize listener to update mobile state
   window.addEventListener('resize', () => {
     checkMobileState()
     fixMobileScroll()
   })
-  
+
   // Add orientation change listener for mobile
   window.addEventListener('orientationchange', () => {
     setTimeout(() => {
@@ -632,42 +671,49 @@ onMounted(async () => {
 
   // Configure ScrollTrigger for both desktop and mobile
   ScrollTrigger.config({
-    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
-    ignoreMobileResize: true
+    autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
+    ignoreMobileResize: true,
   })
 
   // Hero animations (works on both desktop and mobile)
   const heroTl = gsap.timeline()
-  
-  heroTl.fromTo(heroTitle.value.children,
-    { y: isMobileDevice.value ? 50 : 100, opacity: 0, rotationX: isMobileDevice.value ? 0 : -15 },
-    { duration: 0.8, y: 0, opacity: 1, rotationX: 0, stagger: 0.1, ease: 'power3.out' }
-  )
-  .fromTo(heroSubtitle.value,
-    { y: isMobileDevice.value ? 30 : 50, opacity: 0 },
-    { duration: 0.6, y: 0, opacity: 1, ease: 'power2.out' },
-    '-=0.6'
-  )
-  .fromTo('.hero-description',
-    { y: isMobileDevice.value ? 20 : 30, opacity: 0 },
-    { duration: 0.5, y: 0, opacity: 1, ease: 'power2.out' },
-    '-=0.4'
-  )
-  .fromTo(heroStats.value.children,
-    { y: isMobileDevice.value ? 20 : 30, opacity: 0 },
-    { duration: 0.5, y: 0, opacity: 1, stagger: 0.05, ease: 'power2.out' },
-    '-=0.4'
-  )
-  .fromTo(scrollIndicator.value,
-    { opacity: 0 },
-    { duration: 0.3, opacity: 1, ease: 'power2.out' },
-    '-=0.3'
-  )
-  .fromTo(categoryCards.value.children,
-    { y: isMobileDevice.value ? 30 : 50, opacity: 0, rotationY: isMobileDevice.value ? 0 : -10 },
-    { duration: 0.6, y: 0, opacity: 1, rotationY: 0, stagger: 0.1, ease: 'power2.out' },
-    '-=0.5'
-  )
+
+  heroTl
+    .fromTo(
+      heroTitle.value.children,
+      { y: isMobileDevice.value ? 50 : 100, opacity: 0, rotationX: isMobileDevice.value ? 0 : -15 },
+      { duration: 0.8, y: 0, opacity: 1, rotationX: 0, stagger: 0.1, ease: 'power3.out' },
+    )
+    .fromTo(
+      heroSubtitle.value,
+      { y: isMobileDevice.value ? 30 : 50, opacity: 0 },
+      { duration: 0.6, y: 0, opacity: 1, ease: 'power2.out' },
+      '-=0.6',
+    )
+    .fromTo(
+      '.hero-description',
+      { y: isMobileDevice.value ? 20 : 30, opacity: 0 },
+      { duration: 0.5, y: 0, opacity: 1, ease: 'power2.out' },
+      '-=0.4',
+    )
+    .fromTo(
+      heroStats.value.children,
+      { y: isMobileDevice.value ? 20 : 30, opacity: 0 },
+      { duration: 0.5, y: 0, opacity: 1, stagger: 0.05, ease: 'power2.out' },
+      '-=0.4',
+    )
+    .fromTo(
+      scrollIndicator.value,
+      { opacity: 0 },
+      { duration: 0.3, opacity: 1, ease: 'power2.out' },
+      '-=0.3',
+    )
+    .fromTo(
+      categoryCards.value.children,
+      { y: isMobileDevice.value ? 30 : 50, opacity: 0, rotationY: isMobileDevice.value ? 0 : -10 },
+      { duration: 0.6, y: 0, opacity: 1, rotationY: 0, stagger: 0.1, ease: 'power2.out' },
+      '-=0.5',
+    )
 
   // Background animations (lighter on mobile)
   if (isMobileDevice.value) {
@@ -682,9 +728,9 @@ onMounted(async () => {
       ease: 'sine.inOut',
       stagger: {
         amount: 4,
-        from: 'random'
+        from: 'random',
       },
-      force3D: true
+      force3D: true,
     })
 
     gsap.to('.morphing-shape', {
@@ -695,7 +741,7 @@ onMounted(async () => {
       yoyo: true,
       ease: 'sine.inOut',
       stagger: 2,
-      force3D: true
+      force3D: true,
     })
 
     // Simple orbit rotation for mobile
@@ -705,7 +751,7 @@ onMounted(async () => {
       repeat: -1,
       ease: 'none',
       transformOrigin: '50% 50%',
-      force3D: true
+      force3D: true,
     })
 
     // Light floating for 3D elements
@@ -718,7 +764,7 @@ onMounted(async () => {
       yoyo: true,
       ease: 'sine.inOut',
       stagger: 1.5,
-      force3D: true
+      force3D: true,
     })
   } else {
     // Optimized desktop animations
@@ -732,9 +778,9 @@ onMounted(async () => {
       ease: 'sine.inOut',
       stagger: {
         amount: 3,
-        from: 'random'
+        from: 'random',
       },
-      force3D: true
+      force3D: true,
     })
 
     gsap.to('.floating-3d-dot', {
@@ -749,7 +795,7 @@ onMounted(async () => {
       yoyo: true,
       ease: 'sine.inOut',
       stagger: 1,
-      force3D: true
+      force3D: true,
     })
 
     gsap.to('.morphing-shape', {
@@ -761,7 +807,7 @@ onMounted(async () => {
       yoyo: true,
       ease: 'sine.inOut',
       stagger: 1,
-      force3D: true
+      force3D: true,
     })
 
     gsap.to('.orbit-item', {
@@ -770,7 +816,7 @@ onMounted(async () => {
       repeat: -1,
       ease: 'none',
       transformOrigin: '50% 50%',
-      force3D: true
+      force3D: true,
     })
 
     gsap.to('.orbit-item', {
@@ -783,7 +829,7 @@ onMounted(async () => {
       yoyo: true,
       ease: 'sine.inOut',
       stagger: 0.5,
-      force3D: true
+      force3D: true,
     })
   }
 
@@ -793,48 +839,56 @@ onMounted(async () => {
     scaleY: 0.3,
     repeat: -1,
     yoyo: true,
-    ease: 'power2.inOut'
+    ease: 'power2.inOut',
   })
 
   // About section animations (optimized for mobile)
-  gsap.fromTo(aboutTitle.value,
+  gsap.fromTo(
+    aboutTitle.value,
     { y: isMobileDevice.value ? 20 : 30, opacity: 0, rotationX: isMobileDevice.value ? 0 : -5 },
-    { 
-      duration: 0.8, 
-      y: 0, 
-      opacity: 1, 
+    {
+      duration: 0.8,
+      y: 0,
+      opacity: 1,
       rotationX: 0,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: aboutSection.value,
         start: 'top 80%',
-        toggleActions: "play none none reverse"
-      }
-    }
+        toggleActions: 'play none none reverse',
+      },
+    },
   )
 
-  gsap.fromTo(aboutDescription.value.children,
+  gsap.fromTo(
+    aboutDescription.value.children,
     { y: isMobileDevice.value ? 15 : 20, opacity: 0, rotationY: isMobileDevice.value ? 0 : -3 },
-    { 
-      duration: 0.6, 
-      y: 0, 
-      opacity: 1, 
+    {
+      duration: 0.6,
+      y: 0,
+      opacity: 1,
       rotationY: 0,
       stagger: 0.15,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: aboutDescription.value,
         start: 'top 85%',
-        toggleActions: "play none none reverse"
-      }
-    }
+        toggleActions: 'play none none reverse',
+      },
+    },
   )
 
-  gsap.fromTo('.orbit-item',
-    { scale: 0, opacity: 0, z: isMobileDevice.value ? 0 : -50, rotationY: isMobileDevice.value ? 0 : -90 },
-    { 
-      scale: 1, 
-      opacity: 1, 
+  gsap.fromTo(
+    '.orbit-item',
+    {
+      scale: 0,
+      opacity: 0,
+      z: isMobileDevice.value ? 0 : -50,
+      rotationY: isMobileDevice.value ? 0 : -90,
+    },
+    {
+      scale: 1,
+      opacity: 1,
       z: 0,
       rotationY: 0,
       duration: 0.6,
@@ -843,32 +897,34 @@ onMounted(async () => {
       scrollTrigger: {
         trigger: aboutVisual.value,
         start: 'top 80%',
-        toggleActions: "play none none reverse"
-      }
-    }
+        toggleActions: 'play none none reverse',
+      },
+    },
   )
 
   // Skills section animations
-  gsap.fromTo(skillsTitle.value,
+  gsap.fromTo(
+    skillsTitle.value,
     { y: isMobileDevice.value ? 30 : 50, opacity: 0 },
-    { 
-      duration: 1, 
-      y: 0, 
-      opacity: 1, 
+    {
+      duration: 1,
+      y: 0,
+      opacity: 1,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: skillsSection.value,
         start: 'top 80%',
-        toggleActions: "play none none reverse"
-      }
-    }
+        toggleActions: 'play none none reverse',
+      },
+    },
   )
 
-  gsap.fromTo('.skill-category',
+  gsap.fromTo(
+    '.skill-category',
     { y: isMobileDevice.value ? 30 : 50, opacity: 0, rotationY: isMobileDevice.value ? 0 : -10 },
-    { 
-      y: 0, 
-      opacity: 1, 
+    {
+      y: 0,
+      opacity: 1,
       rotationY: 0,
       duration: 0.8,
       stagger: 0.2,
@@ -876,49 +932,52 @@ onMounted(async () => {
       scrollTrigger: {
         trigger: '.skills-grid',
         start: 'top 80%',
-        toggleActions: "play none none reverse"
-      }
-    }
+        toggleActions: 'play none none reverse',
+      },
+    },
   )
 
   // Skill bars animation
-  skillBars.value.forEach(bar => {
-    gsap.fromTo(bar,
+  skillBars.value.forEach((bar) => {
+    gsap.fromTo(
+      bar,
       { width: '0%' },
-      { 
+      {
         width: bar.dataset.width,
         duration: 1.5,
         ease: 'power2.out',
         scrollTrigger: {
           trigger: bar,
           start: 'top 90%',
-          toggleActions: "play none none reverse"
-        }
-      }
+          toggleActions: 'play none none reverse',
+        },
+      },
     )
   })
 
   // Achievements animations
-  gsap.fromTo(achievementsTitle.value,
+  gsap.fromTo(
+    achievementsTitle.value,
     { y: isMobileDevice.value ? 30 : 50, opacity: 0 },
-    { 
-      duration: 1, 
-      y: 0, 
-      opacity: 1, 
+    {
+      duration: 1,
+      y: 0,
+      opacity: 1,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: achievementsSection.value,
         start: 'top 80%',
-        toggleActions: "play none none reverse"
-      }
-    }
+        toggleActions: 'play none none reverse',
+      },
+    },
   )
 
-  gsap.fromTo('.achievement-card',
+  gsap.fromTo(
+    '.achievement-card',
     { y: isMobileDevice.value ? 30 : 50, opacity: 0, rotationY: isMobileDevice.value ? 0 : -15 },
-    { 
-      y: 0, 
-      opacity: 1, 
+    {
+      y: 0,
+      opacity: 1,
       rotationY: 0,
       duration: 0.8,
       stagger: 0.15,
@@ -926,13 +985,13 @@ onMounted(async () => {
       scrollTrigger: {
         trigger: '.achievements-grid',
         start: 'top 80%',
-        toggleActions: "play none none reverse"
-      }
-    }
+        toggleActions: 'play none none reverse',
+      },
+    },
   )
 
   // Counter animations (works on both desktop and mobile)
-  statNumbers.value.forEach(el => {
+  statNumbers.value.forEach((el) => {
     const target = el.dataset.target
     animateCounter(el, target)
   })
@@ -942,9 +1001,9 @@ onUnmounted(() => {
   // Clean up event listeners
   window.removeEventListener('resize', checkMobileState)
   window.removeEventListener('orientationchange', checkMobileState)
-  
+
   // Kill all GSAP animations
-  gsap.killTweensOf("*")
+  gsap.killTweensOf('*')
   ScrollTrigger.killAll()
 })
 </script>
@@ -1019,7 +1078,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
@@ -1274,8 +1333,12 @@ onUnmounted(() => {
 }
 
 @keyframes glow {
-  from { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); }
-  to { box-shadow: 0 0 20px rgba(255, 107, 107, 0.8); }
+  from {
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+  }
 }
 
 .card-description {
@@ -1355,7 +1418,12 @@ onUnmounted(() => {
 }
 
 .about-section {
-  background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 136, 0.02) 50%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 255, 136, 0.02) 50%,
+    transparent 100%
+  );
 }
 
 .about-content {
@@ -1438,11 +1506,12 @@ onUnmounted(() => {
 }
 
 @keyframes orbit-float {
-  0%, 100% { 
-    transform: translate(var(--x, 0), var(--y, 0)) scale(1) rotateY(0deg) translateZ(0px); 
+  0%,
+  100% {
+    transform: translate(var(--x, 0), var(--y, 0)) scale(1) rotateY(0deg) translateZ(0px);
   }
-  50% { 
-    transform: translate(var(--x, 0), var(--y, 0)) scale(1.1) rotateY(180deg) translateZ(20px); 
+  50% {
+    transform: translate(var(--x, 0), var(--y, 0)) scale(1.1) rotateY(180deg) translateZ(20px);
   }
 }
 
@@ -1492,7 +1561,12 @@ onUnmounted(() => {
 }
 
 .skills-section {
-  background: linear-gradient(180deg, transparent 0%, rgba(0, 212, 255, 0.02) 50%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 212, 255, 0.02) 50%,
+    transparent 100%
+  );
 }
 
 .skills-grid {
@@ -1580,8 +1654,12 @@ onUnmounted(() => {
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .skill-level {
@@ -1784,7 +1862,7 @@ body {
     justify-content: center;
     padding-bottom: 3rem;
   }
-  
+
   .hero-content {
     margin-top: 0;
     align-items: center;
@@ -1804,7 +1882,7 @@ body {
     contain: layout style paint;
     transform: translateZ(0);
   }
-  
+
   .scroll-indicator {
     display: none;
   }
@@ -1870,11 +1948,12 @@ body {
   }
 
   @keyframes orbit-float {
-    0%, 100% { 
-      transform: translate(var(--x, 0), var(--y, 0)) scale(1); 
+    0%,
+    100% {
+      transform: translate(var(--x, 0), var(--y, 0)) scale(1);
     }
-    50% { 
-      transform: translate(var(--x, 0), var(--y, 0)) scale(1.1); 
+    50% {
+      transform: translate(var(--x, 0), var(--y, 0)) scale(1.1);
     }
   }
 
@@ -1889,7 +1968,7 @@ body {
     opacity: 0.05;
     z-index: -1;
   }
-  
+
   .section-title {
     position: relative;
     z-index: 1;
@@ -1901,7 +1980,7 @@ body {
   * {
     cursor: auto !important;
   }
-  
+
   /* Hide any custom cursor elements */
   .custom-cursor,
   .cursor-dot,
@@ -1912,19 +1991,19 @@ body {
     visibility: hidden !important;
     pointer-events: none !important;
   }
-  
+
   /* Hide scrollbar on mobile for cleaner look */
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
   }
-  
+
   /* Ensure smooth scrolling on mobile */
   html {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   body {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
@@ -1939,19 +2018,19 @@ body {
     align-items: center;
     justify-content: center;
   }
-  
+
   .hero-content {
     min-height: auto;
     gap: clamp(2rem, 6vw, 3rem);
     align-items: center;
     justify-content: center;
   }
-  
+
   .hero-title {
     margin-top: 0;
     line-height: 0.85;
   }
-  
+
   .categories-grid {
     margin-bottom: 2rem;
   }
@@ -2114,7 +2193,7 @@ body {
   * {
     cursor: auto !important;
   }
-  
+
   .custom-cursor,
   .cursor-dot,
   .cursor-outline,
@@ -2124,17 +2203,17 @@ body {
     visibility: hidden !important;
     pointer-events: none !important;
   }
-  
+
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
   }
-  
+
   html {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   body {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
