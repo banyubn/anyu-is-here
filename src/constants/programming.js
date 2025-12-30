@@ -180,4 +180,18 @@ export const PROJECTS = [
     tech: ['Laravel', 'Fully Functional'],
     image: new URL('../assets/programming/investor-relation-portal.png', import.meta.url).href,
   },
+  {
+    id: 9,
+    name: 'Amiga Plastik Management App',
+    description: 'Aplikasi manajemen untuk pabrik plastik, dibangun dengan Laravel dan fully functional.',
+    tech: ['Laravel', 'Fully Functional'],
+    image: new URL('../assets/programming/amiga-plastik.png', import.meta.url).href,
+  },
+  {
+    id: 10,
+    name: 'WIKA Beton ManRisk',
+    description: 'Sistem manajemen risiko untuk client BUMN WIKA Beton, Laravel, fully functional.',
+    tech: ['Laravel', 'Fully Functional'],
+    image: new URL('../assets/programming/wika-manrisk.png', import.meta.url).href,
+  },
 ]
