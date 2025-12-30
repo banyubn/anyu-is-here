@@ -108,7 +108,7 @@ export const ACHIEVEMENTS = [
     id: 1,
     title: 'LKS Champion',
     description: 'Proved skills on the stage. Excellence through competition.',
-    year: '2023',
+    year: '2025',
     icon: Trophy,
   },
   {
@@ -122,7 +122,7 @@ export const ACHIEVEMENTS = [
     id: 3,
     title: '100+ Projects Completed',
     description: 'Successfully delivered diverse projects across multiple domains',
-    year: '2022',
+    year: '2024',
     icon: Target,
   },
   {
