@@ -201,4 +201,11 @@ export const PROJECTS = [
     tech: ['Next.js', 'Golang', 'WebSocket', 'UI Slicing', 'AWS', 'Three-Tier Architecture', 'Fully Functional'],
     image: new URL('../assets/programming/gaul-chatting-app.png', import.meta.url).href,
   },
+  {
+    id: 12,
+    name: 'Resume Analyzer',
+    description: 'A professional AI-powered tool to scan, analyze, and rate the quality of CVs/Resumes, providing actionable feedback for career advancement.',
+    tech: ['AI', 'Machine Learning', 'Python', 'Streamlit', 'Resume', 'CV', 'Analyzer'],
+    image: new URL('../assets/programming/resume-analyzer.png', import.meta.url).href,
+  },
 ]
