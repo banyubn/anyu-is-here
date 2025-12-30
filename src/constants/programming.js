@@ -176,22 +176,29 @@ export const PROJECTS = [
   {
     id: 8,
     name: 'Investor Relation Portal',
-    description: 'Portal aplikasi untuk hubungan investor, dibangun dengan Laravel.',
+    description: 'An application portal for investor relations, built with Laravel.',
     tech: ['Laravel', 'Fully Functional'],
     image: new URL('../assets/programming/investor-relation-portal.png', import.meta.url).href,
   },
   {
     id: 9,
     name: 'Amiga Plastik Management App',
-    description: 'Aplikasi manajemen untuk pabrik plastik, dibangun dengan Laravel dan fully functional.',
+    description: 'A management application for a plastic factory, built with Laravel and fully functional.',
     tech: ['Laravel', 'Fully Functional'],
     image: new URL('../assets/programming/amiga-plastik.png', import.meta.url).href,
   },
   {
     id: 10,
     name: 'WIKA Beton ManRisk',
-    description: 'Sistem manajemen risiko untuk client BUMN WIKA Beton, Laravel, fully functional.',
+    description: 'A risk management system for the state-owned enterprise client WIKA Beton, built with Laravel and fully functional.',
     tech: ['Laravel', 'Fully Functional'],
     image: new URL('../assets/programming/wika-manrisk.png', import.meta.url).href,
+  },
+  {
+    id: 11,
+    name: 'Gaul Chatting App',
+    description: 'A real-time chatting application leveraging Next.js for the frontend, Golang for the backend, and WebSocket for real-time communication. Hosted on AWS using a three-tier architecture for scalability and reliability.',
+    tech: ['Next.js', 'Golang', 'WebSocket', 'UI Slicing', 'AWS'],
+    image: new URL('../assets/programming/gaul-chatting-app.png', import.meta.url).href,
   },
 ]
