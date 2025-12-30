@@ -15,64 +15,14 @@
 </template>
 
 <script setup>
-import { ref, provide, onMounted } from 'vue'
-import { gsap } from 'gsap'
+import { provide } from 'vue'
 import CustomCursor from './components/CustomCursor.vue'
 import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
+import { useTheme } from '@/composables/useTheme'
 
-const isDarkMode = ref(true)
+const { isDarkMode, toggleDarkMode } = useTheme()
 
-const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value
-  
-  gsap.to('body', {
-    duration: 0.5,
-    backgroundColor: isDarkMode.value ? '#0a0a0a' : '#ffffff',
-    ease: 'power2.inOut'
-  })
-  
-  // Update CSS variables for theme
-  updateThemeColors()
-}
-
-const updateThemeColors = () => {
-  const root = document.documentElement
-  
-  if (isDarkMode.value) {
-    // Dark theme colors
-    root.style.setProperty('--bg-color', '#0a0a0a')
-    root.style.setProperty('--text-color', '#ffffff')
-    root.style.setProperty('--accent-color', '#00ff88')
-    root.style.setProperty('--accent-color-2', '#00d4ff')
-    root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.02)')
-    root.style.setProperty('--card-bg-light', 'rgba(255, 255, 255, 0.05)')
-    root.style.setProperty('--border-color', 'rgba(255, 255, 255, 0.1)')
-    root.style.setProperty('--accent-glow-1', 'rgba(0, 255, 136, 0.1)')
-    root.style.setProperty('--accent-glow-2', 'rgba(0, 212, 255, 0.1)')
-    root.style.setProperty('--accent-gradient', 'linear-gradient(45deg, #00ff88, #00d4ff)')
-    root.style.setProperty('--footer-bg', 'linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%)')
-  } else {
-    // Light theme colors
-    root.style.setProperty('--bg-color', '#ffffff')
-    root.style.setProperty('--text-color', '#0a0a0a')
-    root.style.setProperty('--accent-color', '#00cc66')
-    root.style.setProperty('--accent-color-2', '#0099cc')
-    root.style.setProperty('--card-bg', 'rgba(0, 0, 0, 0.02)')
-    root.style.setProperty('--card-bg-light', 'rgba(0, 0, 0, 0.05)')
-    root.style.setProperty('--border-color', 'rgba(0, 0, 0, 0.1)')
-    root.style.setProperty('--accent-glow-1', 'rgba(0, 204, 102, 0.1)')
-    root.style.setProperty('--accent-glow-2', 'rgba(0, 153, 204, 0.1)')
-    root.style.setProperty('--accent-gradient', 'linear-gradient(45deg, #00cc66, #0099cc)')
-    root.style.setProperty('--footer-bg', 'linear-gradient(135deg, rgba(0, 204, 102, 0.05) 0%, rgba(0, 153, 204, 0.05) 100%)')
-  }
-}
-
-onMounted(() => {
-  updateThemeColors()
-})
-
-// Provide dark mode state to all components
 provide('isDarkMode', isDarkMode)
 </script>
 

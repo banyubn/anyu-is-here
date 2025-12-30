@@ -205,29 +205,27 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { 
-  Code, 
-  ExternalLink, 
-  Database, 
-  Server, 
-  Globe, 
-  Smartphone, 
-  GitBranch, 
-  Container, 
-  Cloud, 
-  Flame,
-  Layers,
-  FileCode,
-  Palette,
-  Zap,
-  Settings,
-  Box
-} from 'lucide-vue-next'
+import { Code, ExternalLink } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
+import { useAnimations } from '@/composables/useAnimations'
+import { useProgramming } from '@/composables/useProgramming'
+import { useCarousel } from '@/composables/useCarousel'
+import {
+  PROGRAMMING_STATS,
+  TECH_STACK_ROW1,
+  TECH_STACK_ROW2,
+  TECH_STACK_ROW3,
+  PROJECTS,
+  TECH_ICON_MAP,
+} from '@/constants/programming'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Refs
+const { animateCounter } = useAnimations()
+const { selectedProject, getSkillLevel, onLanguageHover, onLanguageLeave, openModal, closeModal } =
+  useProgramming()
+const { createInfiniteCarousel } = useCarousel()
+
 const statsSection = ref(null)
 const statsTitle = ref(null)
 const statsSubtext = ref(null)
@@ -235,235 +233,17 @@ const proficiencyChart = ref(null)
 const languageCards = ref([])
 const progressBars = ref([])
 const percentageNumbers = ref([])
-const track = ref(null)
-const selectedProject = ref(null)
-
-// New refs for the three carousel tracks
 const trackRight1 = ref(null)
 const trackLeft = ref(null)
 const trackRight2 = ref(null)
 
-// Tech icon mapping
-const techIconMap = {
-  'JavaScript': Code,
-  'TypeScript': FileCode,
-  'Vue.js': Layers,
-  'React': Zap,
-  'Node.js': Server,
-  'Express': Server,
-  'MongoDB': Database,
-  'PostgreSQL': Database,
-  'Python': Code,
-  'PHP': Globe,
-  'HTML': Globe,
-  'CSS': Palette,
-  'Git': GitBranch,
-  'Docker': Container,
-  'AWS': Cloud,
-  'Firebase': Flame,
-  'Laravel': Settings,
-  'Nuxt.js': Box
-}
+const programmingStats = PROGRAMMING_STATS
+const techStackRow1 = TECH_STACK_ROW1
+const techStackRow2 = TECH_STACK_ROW2
+const techStackRow3 = TECH_STACK_ROW3
+const projects = PROJECTS
 
-// Method to get tech icon
-const getTechIcon = (techName) => {
-  return techIconMap[techName] || Code
-}
-
-const programmingStats = [
-  { 
-    name: 'JavaScript/TypeScript', 
-    percentage: 85, 
-    color: '#f7df1e',
-    category: 'Frontend/Backend',
-    years: 3,
-    projects: 10,
-    description: 'Primary language for full-stack development with modern frameworks and libraries.',
-    tags: ['ES6+', 'Async/Await', 'TypeScript', 'Node.js']
-  },
-  { 
-    name: 'Vue.js', 
-    percentage: 80, 
-    color: '#4fc08d',
-    category: 'Frontend Framework',
-    years: 3,
-    projects: 25,
-    description: 'Preferred frontend framework for building reactive and component-based applications.',
-    tags: ['Composition API', 'Vuex', 'Vue Router', 'Nuxt.js']
-  },
-  { 
-    name: 'React', 
-    percentage: 65, 
-    color: '#61dafb',
-    category: 'Frontend Framework',
-    years: 3,
-    projects: 20,
-    description: 'Extensive experience in building scalable React applications with modern patterns.',
-    tags: ['Hooks', 'Redux', 'Next.js', 'React Native']
-  },
-  { 
-    name: 'Node.js', 
-    percentage: 88, 
-    color: '#339933',
-    category: 'Backend Runtime',
-    years: 3,
-    projects: 15,
-    description: 'Server-side JavaScript development with Express, APIs, and microservices.',
-    tags: ['Express.js', 'REST APIs', 'GraphQL', 'Microservices']
-  },
-  { 
-    name: 'Python', 
-    percentage: 40, 
-    color: '#3776ab',
-    category: 'Backend/Data Science',
-    years: 2,
-    projects: 3,
-    description: 'Backend development, automation scripts, and data analysis projects.',
-    tags: ['Django', 'Flask', 'Pandas', 'Automation']
-  },
-  { 
-    name: 'PHP', 
-    percentage: 84, 
-    color: '#777bb4',
-    category: 'Backend Language',
-    years: 3,
-    projects: 20,
-    description: 'Web development with modern PHP frameworks and content management systems.',
-    tags: ['Laravel', 'Lumen', 'WordPress', 'Composer']
-  },
-  { 
-    name: 'MySQL/PostgreSQL', 
-    percentage: 82, 
-    color: '#336791',
-    category: 'Database',
-    years: 3,
-    projects: 35,
-    description: 'Database design, optimization, and complex query development.',
-    tags: ['Query Optimization', 'Database Design', 'Migrations', 'Indexing']
-  },
-  { 
-    name: 'MongoDB', 
-    percentage: 62, 
-    color: '#47a248',
-    category: 'NoSQL Database',
-    years: 2,
-    projects: 5,
-    description: 'NoSQL database development with aggregation pipelines and schema design.',
-    tags: ['Aggregation', 'Mongoose', 'Atlas', 'Indexing']
-  }
-]
-
-// Split tech stack into three rows
-const techStackRow1 = ['JavaScript', 'TypeScript', 'Vue.js', 'React', 'Node.js', 'Express']
-const techStackRow2 = ['MongoDB', 'PostgreSQL', 'Python', 'PHP', 'HTML', 'CSS']
-const techStackRow3 = ['Git', 'Docker', 'AWS', 'Firebase', 'Laravel', 'Nuxt.js']
-
-// Original tech stack array (keep for compatibility)
-const techStack = [
-  'JavaScript', 'TypeScript', 'Vue.js', 'React', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Python', 'PHP', 'HTML', 'CSS', 'Git', 'Docker', 'AWS', 'Firebase'
-]
-
-const projects = [
-  {
-    id: 1,
-    name: 'Weather Gaul App',
-    description: 'Weather forecasts with map integration',
-    tech: ['React', 'Leaflet'],
-    image: new URL('../assets/programming/weather-gaul-app.png', import.meta.url).href
-  },
-  {
-    id: 2,
-    name: 'Late Recapitulation',
-    description: "Student's presence manager with VueJS and Laravel",
-    tech: ['Vue', 'Laravel', 'Vuetify', 'MySQL'],
-    image: new URL('../assets/programming/late-recapitulation.png', import.meta.url).href
-  },
-  {
-    id: 3,
-    name: 'Ticketing App',
-    description: 'Booking simulation mobile application',
-    tech: ['Flutter', 'Firebase'],
-    image: new URL('../assets/programming/ticketing-app.png', import.meta.url).href
-  },
-  {
-    id: 4,
-    name: 'Makan Cuy',
-    description: 'An award-winning LKS project that won first place, a food E-Commerce web application',
-    tech: ['Vue', 'Vuetify', 'Lumen', 'MySQL'],
-    image: new URL('../assets/programming/makan-cuy.png', import.meta.url).href
-  },
-  {
-    id: 5,
-    name: 'Football Gaul',
-    description: '2D football game I made with Javascript',
-    tech: ['Native Javascript'],
-    image: new URL('../assets/programming/football-wow.png', import.meta.url).href
-  }
-]
-
-// Methods
-const getSkillLevel = (percentage) => {
-  if (percentage >= 90) return 'expert'
-  if (percentage >= 80) return 'advanced'
-  return 'intermediate'
-}
-
-const onLanguageHover = (event) => {
-  const card = event.currentTarget
-  const overlay = card.querySelector('.language-overlay')
-  
-  gsap.to(card, {
-    duration: 0.3,
-    y: -8,
-    scale: 1.02,
-    ease: 'power2.out'
-  })
-  
-  gsap.to(overlay, {
-    duration: 0.3,
-    opacity: 1,
-    y: 0,
-    ease: 'power2.out'
-  })
-}
-
-const onLanguageLeave = (event) => {
-  const card = event.currentTarget
-  const overlay = card.querySelector('.language-overlay')
-  
-  gsap.to(card, {
-    duration: 0.3,
-    y: 0,
-    scale: 1,
-    ease: 'power2.out'
-  })
-  
-  gsap.to(overlay, {
-    duration: 0.3,
-    opacity: 0,
-    y: 10,
-    ease: 'power2.out'
-  })
-}
-
-const animateCounter = (element, target) => {
-  gsap.to({ value: 0 }, {
-    duration: 2,
-    value: target,
-    ease: 'power2.out',
-    onUpdate: function() {
-      element.textContent = Math.round(this.targets()[0].value)
-    }
-  })
-}
-
-const openModal = (project) => {
-  selectedProject.value = project
-}
-
-const closeModal = () => {
-  selectedProject.value = null
-}
+const getTechIcon = (techName) => TECH_ICON_MAP[techName] || Code
 
 onMounted(async () => {
   await nextTick()
@@ -579,54 +359,10 @@ onMounted(async () => {
     }
   )
 
-  // Improved infinite carousel animations with portal effect
-  // Row 1 - Moving Right (portal effect)
-  if (trackRight1.value) {
-    const totalWidth = trackRight1.value.scrollWidth / 3 // Divide by 3 because we tripled the content
-    
-    gsap.set(trackRight1.value, { x: 0 })
-    gsap.to(trackRight1.value, {
-      x: -totalWidth,
-      duration: 25,
-      ease: 'none',
-      repeat: -1,
-      modifiers: {
-        x: gsap.utils.unitize(x => parseFloat(x) % totalWidth)
-      }
-    })
-  }
-
-  // Row 2 - Moving Left (portal effect)
-  if (trackLeft.value) {
-    const totalWidth = trackLeft.value.scrollWidth / 3 // Divide by 3 because we tripled the content
-    
-    gsap.set(trackLeft.value, { x: -totalWidth })
-    gsap.to(trackLeft.value, {
-      x: 0,
-      duration: 20,
-      ease: 'none',
-      repeat: -1,
-      modifiers: {
-        x: gsap.utils.unitize(x => parseFloat(x) % totalWidth)
-      }
-    })
-  }
-
-  // Row 3 - Moving Right (portal effect)
-  if (trackRight2.value) {
-    const totalWidth = trackRight2.value.scrollWidth / 3 // Divide by 3 because we tripled the content
-    
-    gsap.set(trackRight2.value, { x: 0 })
-    gsap.to(trackRight2.value, {
-      x: -totalWidth,
-      duration: 30,
-      ease: 'none',
-      repeat: -1,
-      modifiers: {
-        x: gsap.utils.unitize(x => parseFloat(x) % totalWidth)
-      }
-    })
-  }
+  // Improved infinite carousel animations
+  createInfiniteCarousel(trackRight1.value, 'right', 25)
+  createInfiniteCarousel(trackLeft.value, 'left', 20)
+  createInfiniteCarousel(trackRight2.value, 'right', 30)
 })
 </script>
 

@@ -205,30 +205,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, onBeforeMount, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useHome } from '@/composables/useHome'
+import { useAnimations } from '@/composables/useAnimations'
+import { STATS, CATEGORIES, ORBIT_SKILLS, SKILL_CATEGORIES, ACHIEVEMENTS } from '@/constants/home'
 import {
-  Code,
-  Video,
-  Music,
-  Award,
-  Palette,
-  Database,
-  Globe,
-  Zap,
-  Trophy,
-  Star,
-  Target,
-  Rocket,
-} from 'lucide-vue-next'
+  getRandomPosition,
+  getShapeStyle,
+  getOrbitPosition,
+  get3DPosition,
+} from '@/utils/helpers'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Add reactive state for mobile detection
-const isMobileDevice = ref(false)
+const { isMobileDevice, onCardHover, onCardLeave, onOrbitItemHover, onOrbitItemLeave, onAchievementHover, onAchievementLeave } = useHome()
+const { fadeInUp, fadeIn, animateProgressBar } = useAnimations()
 
-// Refs
 const heroSection = ref(null)
 const heroTitle = ref(null)
 const heroSubtitle = ref(null)
@@ -237,8 +231,6 @@ const scrollIndicator = ref(null)
 const categoryCards = ref(null)
 const statNumbers = ref([])
 const skillBars = ref([])
-
-// Section refs
 const aboutSection = ref(null)
 const aboutTitle = ref(null)
 const aboutDescription = ref(null)
@@ -250,372 +242,11 @@ const achievementsSection = ref(null)
 const achievementsTitle = ref(null)
 const achievementCards = ref([])
 
-// Check if device is mobile
-const isMobile = () => {
-  return (
-    window.innerWidth <= 768 ||
-    /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  )
-}
-
-// Update mobile state and handle custom cursor
-const checkMobileState = () => {
-  isMobileDevice.value = isMobile()
-
-  // If there's a custom cursor element, hide it on mobile
-  const customCursor = document.querySelector('.custom-cursor')
-  if (customCursor) {
-    if (isMobileDevice.value) {
-      customCursor.style.display = 'none'
-    } else {
-      customCursor.style.display = ''
-    }
-  }
-}
-
-// Fix mobile scroll issues
-const fixMobileScroll = () => {
-  if (isMobileDevice.value) {
-    // Reset body and html scroll behavior
-    document.body.style.overflow = 'auto'
-    document.body.style.overflowX = 'hidden'
-    document.body.style.height = 'auto'
-    document.documentElement.style.overflow = 'auto'
-    document.documentElement.style.overflowX = 'hidden'
-    document.documentElement.style.height = 'auto'
-
-    // Force refresh of scroll
-    window.scrollTo(0, window.scrollY)
-  }
-}
-
-const stats = [
-  { value: '350+', label: 'PROJECTS' },
-  { value: '8+', label: 'YEARS' },
-  { value: '70+', label: 'CLIENTS' },
-]
-
-const categories = [
-  {
-    id: 'programming',
-    name: 'PROGRAMMING',
-    description: 'Full-stack development with modern technologies',
-    icon: Code,
-    technologies: ['Vue.js', 'React', 'Node.js', 'Python', 'TypeScript'],
-    comingSoon: false,
-    path: '/programming',
-  },
-  {
-    id: 'video',
-    name: 'VIDEO EDITING',
-    description: 'Cinematic storytelling through visual media',
-    icon: Video,
-    technologies: ['After Effects', 'Premiere Pro', 'DaVinci', 'Blender'],
-    comingSoon: false,
-    path: '/video-editing',
-  },
-  {
-    id: 'music',
-    name: 'MUSIC PRODUCTION',
-    description: 'Creating immersive audio experiences',
-    icon: Music,
-    technologies: ['FL Studio', 'Sytrus', 'Serum', 'Kontakt'],
-    comingSoon: false,
-    path: '/music-production',
-  },
-  {
-    id: 'certificates',
-    name: 'CERTIFICATES',
-    description: 'Professional certifications and achievements',
-    icon: Award,
-    technologies: ['AWS', 'Google Cloud', 'Microsoft', 'Adobe'],
-    comingSoon: false,
-    path: '/certificates',
-  },
-]
-
-const orbitSkills = [
-  'Vue.js',
-  'React',
-  'Node.js',
-  'Python',
-  'After Effects',
-  'Premiere Pro',
-  'Ableton Live',
-  'TypeScript',
-]
-
-const skillCategories = [
-  {
-    name: 'Frontend Development',
-    icon: Globe,
-    color: '#61dafb',
-    skills: [
-      { name: 'Vue.js', level: 90 },
-      { name: 'React', level: 85 },
-      { name: 'Tailwind CSS', level: 88 },
-      { name: 'GSAP', level: 82 },
-    ],
-  },
-  {
-    name: 'Backend Development',
-    icon: Database,
-    color: '#339933',
-    skills: [
-      { name: 'LUMEN', level: 85 },
-      { name: 'SQL', level: 80 },
-      { name: 'Express', level: 75 },
-      { name: 'PostgreSQL', level: 78 },
-    ],
-  },
-  {
-    name: 'Creative Tools',
-    icon: Palette,
-    color: '#9999ff',
-    skills: [
-      { name: 'After Effects', level: 90 },
-      { name: 'Premiere Pro', level: 88 },
-      { name: 'Photoshop', level: 85 },
-      { name: 'FL Studio', level: 80 },
-    ],
-  },
-  {
-    name: 'DevOps & Tools',
-    icon: Zap,
-    color: '#ff6b6b',
-    skills: [
-      { name: 'Docker', level: 25 },
-      { name: 'Git', level: 90 },
-      { name: 'WSL', level: 70 },
-      { name: 'SQLWorkBench', level: 65 },
-    ],
-  },
-]
-
-const achievements = [
-  {
-    id: 1,
-    title: 'LKS National Champion',
-    description: 'Proved skills on the national stage. Excellence through competition.',
-    year: '2023',
-    icon: Trophy,
-  },
-  {
-    id: 2,
-    title: '50M+ Video Views',
-    description: 'Cumulative views across all video editing projects and content',
-    year: '2021',
-    icon: Star,
-  },
-  {
-    id: 3,
-    title: '100+ Projects Completed',
-    description: 'Successfully delivered diverse projects across multiple domains',
-    year: '2022',
-    icon: Target,
-  },
-  {
-    id: 4,
-    title: 'Certified Cool Guy',
-    description: 'Certified in spreading good vibes',
-    year: 'jk :/',
-    icon: Rocket,
-  },
-]
-
-// Methods
-const getRandomPosition = () => ({
-  left: Math.random() * 100 + '%',
-  top: Math.random() * 100 + '%',
-  animationDelay: Math.random() * 2 + 's',
-})
-
-const getShapeStyle = (index) => {
-  const shapes = [
-    { left: '10%', top: '20%', size: '100px' },
-    { left: '80%', top: '10%', size: '60px' },
-    { left: '70%', top: '70%', size: '80px' },
-    { left: '20%', top: '80%', size: '120px' },
-    { left: '50%', top: '50%', size: '40px' },
-  ]
-  return {
-    left: shapes[index - 1]?.left || '50%',
-    top: shapes[index - 1]?.top || '50%',
-    width: shapes[index - 1]?.size || '60px',
-    height: shapes[index - 1]?.size || '60px',
-    animationDelay: index * 0.5 + 's',
-  }
-}
-
-const getOrbitPosition = (index, total) => {
-  const angle = (index / total) * 360
-  const radius = 120
-  const x = Math.cos((angle * Math.PI) / 180) * radius
-  const y = Math.sin((angle * Math.PI) / 180) * radius
-  return {
-    transform: `translate(${x}px, ${y}px)`,
-    animationDelay: index * 0.2 + 's',
-  }
-}
-
-const get3DPosition = (index) => {
-  const positions = [
-    { left: '10%', top: '15%', animationDelay: '0s' },
-    { left: '85%', top: '25%', animationDelay: '0.5s' },
-    { left: '15%', top: '75%', animationDelay: '1s' },
-    { left: '80%', top: '80%', animationDelay: '1.5s' },
-    { left: '50%', top: '10%', animationDelay: '2s' },
-    { left: '90%', top: '50%', animationDelay: '2.5s' },
-    { left: '5%', top: '45%', animationDelay: '3s' },
-    { left: '60%', top: '90%', animationDelay: '3.5s' },
-  ]
-  return positions[index - 1] || { left: '50%', top: '50%', animationDelay: '0s' }
-}
-
-const onCardHover = (event) => {
-  if (isMobileDevice.value) return // Disable hover effects on mobile
-
-  const card = event.currentTarget
-  const overlay = card.querySelector('.card-overlay')
-  const iconWrapper = card.querySelector('.card-icon-wrapper')
-  const techTags = card.querySelectorAll('.tech-tag')
-
-  if (!card.classList.contains('coming-soon')) {
-    gsap.to(card, {
-      duration: 0.15,
-      y: -10,
-      scale: 1.02,
-      rotationY: 5,
-      ease: 'power2.out',
-    })
-
-    gsap.to(overlay, {
-      duration: 0.15,
-      opacity: 1,
-      ease: 'power2.out',
-    })
-
-    gsap.to(iconWrapper, {
-      duration: 0.15,
-      scale: 1.1,
-      rotationY: 10,
-      ease: 'power2.out',
-    })
-
-    gsap.to(techTags, {
-      duration: 0.15,
-      y: -2,
-      stagger: 0.02,
-      ease: 'power2.out',
-    })
-  }
-}
-
-const onCardLeave = (event) => {
-  if (isMobileDevice.value) return // Disable hover effects on mobile
-
-  const card = event.currentTarget
-  const overlay = card.querySelector('.card-overlay')
-  const iconWrapper = card.querySelector('.card-icon-wrapper')
-  const techTags = card.querySelectorAll('.tech-tag')
-
-  gsap.to(card, {
-    duration: 0.15,
-    y: 0,
-    scale: 1,
-    rotationY: 0,
-    ease: 'power2.out',
-  })
-
-  gsap.to(overlay, {
-    duration: 0.15,
-    opacity: 0,
-    ease: 'power2.out',
-  })
-
-  gsap.to(iconWrapper, {
-    duration: 0.15,
-    scale: 1,
-    rotationY: 0,
-    ease: 'power2.out',
-  })
-
-  gsap.to(techTags, {
-    duration: 0.15,
-    y: 0,
-    ease: 'power2.out',
-  })
-}
-
-const onOrbitItemHover = (event) => {
-  if (isMobileDevice.value) return // Disable hover effects on mobile
-
-  const item = event.currentTarget
-  gsap.to(item, {
-    duration: 0.15,
-    scale: 1.3,
-    z: 50,
-    rotationY: 15,
-    ease: 'power2.out',
-  })
-}
-
-const onOrbitItemLeave = (event) => {
-  if (isMobileDevice.value) return // Disable hover effects on mobile
-
-  const item = event.currentTarget
-  gsap.to(item, {
-    duration: 0.15,
-    scale: 1,
-    z: 0,
-    rotationY: 0,
-    ease: 'power2.out',
-  })
-}
-
-const onAchievementHover = (event) => {
-  if (isMobileDevice.value) return // Disable hover effects on mobile
-
-  const card = event.currentTarget
-  const icon = card.querySelector('.achievement-icon')
-
-  gsap.to(card, {
-    duration: 0.15,
-    y: -15,
-    rotationY: 8,
-    scale: 1.02,
-    ease: 'power2.out',
-  })
-
-  gsap.to(icon, {
-    duration: 0.15,
-    scale: 1.15,
-    rotationY: 20,
-    ease: 'power2.out',
-  })
-}
-
-const onAchievementLeave = (event) => {
-  if (isMobileDevice.value) return // Disable hover effects on mobile
-
-  const card = event.currentTarget
-  const icon = card.querySelector('.achievement-icon')
-
-  gsap.to(card, {
-    duration: 0.15,
-    y: 0,
-    rotationY: 0,
-    scale: 1,
-    ease: 'power2.out',
-  })
-
-  gsap.to(icon, {
-    duration: 0.15,
-    scale: 1,
-    rotationY: 0,
-    ease: 'power2.out',
-  })
-}
+const stats = STATS
+const categories = CATEGORIES
+const orbitSkills = ORBIT_SKILLS
+const skillCategories = SKILL_CATEGORIES
+const achievements = ACHIEVEMENTS
 
 const animateCounter = (element, target) => {
   const isInfinity = target === '∞'
@@ -639,43 +270,13 @@ const animateCounter = (element, target) => {
   )
 }
 
-onBeforeMount(() => {
-  // Check mobile state before mounting
-  if (typeof window !== 'undefined') {
-    checkMobileState()
-  }
-})
-
 onMounted(async () => {
   await nextTick()
 
-  // Check mobile state again after mounting
-  checkMobileState()
-
-  // Fix mobile scroll issues
-  fixMobileScroll()
-
-  // Add resize listener to update mobile state
-  window.addEventListener('resize', () => {
-    checkMobileState()
-    fixMobileScroll()
-  })
-
-  // Add orientation change listener for mobile
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => {
-      checkMobileState()
-      fixMobileScroll()
-    }, 500)
-  })
-
-  // Configure ScrollTrigger for both desktop and mobile
   ScrollTrigger.config({
     autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
     ignoreMobileResize: true,
   })
-
-  // Hero animations (works on both desktop and mobile)
   const heroTl = gsap.timeline()
 
   heroTl
@@ -998,10 +599,6 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  // Clean up event listeners
-  window.removeEventListener('resize', checkMobileState)
-  window.removeEventListener('orientationchange', checkMobileState)
-
   // Kill all GSAP animations
   gsap.killTweensOf('*')
   ScrollTrigger.killAll()
