@@ -106,8 +106,8 @@ export const SKILL_CATEGORIES = [
 export const ACHIEVEMENTS = [
   {
     id: 1,
-    title: 'LKS National Champion',
-    description: 'Proved skills on the national stage. Excellence through competition.',
+    title: 'LKS Champion',
+    description: 'Proved skills on the stage. Excellence through competition.',
     year: '2023',
     icon: Trophy,
   },
