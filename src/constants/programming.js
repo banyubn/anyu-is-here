@@ -198,7 +198,7 @@ export const PROJECTS = [
     id: 11,
     name: 'Gaul Chatting App',
     description: 'A real-time chatting application leveraging Next.js for the frontend, Golang for the backend, and WebSocket for real-time communication. Hosted on AWS using a three-tier architecture for scalability and reliability.',
-    tech: ['Next.js', 'Golang', 'WebSocket', 'UI Slicing', 'AWS'],
+    tech: ['Next.js', 'Golang', 'WebSocket', 'UI Slicing', 'AWS', 'Three-Tier Architecture', 'Fully Functional'],
     image: new URL('../assets/programming/gaul-chatting-app.png', import.meta.url).href,
   },
 ]
